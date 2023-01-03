@@ -40,7 +40,7 @@ const Login = ({
 
     if (!result) return;
 
-    setToken(result.token);
+    await setToken(result.token);
     setPassword(data.password);
   };
 

@@ -29,14 +29,12 @@ const useRequest = <T = any>(
       setError(undefined);
 
       const data = transformData ? await transformData(rawData) : rawData;
-      console.log("data", data);
       const { data: result } = await api[method]<T>(path, data);
 
       if (stopLoadingOnSuccess) setIsLoading(false);
 
       return (result || true) as T;
     } catch (err: any) {
-      console.log("xxxx", err);
       setIsLoading(false);
 
       if (err?.response?.data?.message) setError(err.response.data.message);

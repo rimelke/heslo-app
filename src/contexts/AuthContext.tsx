@@ -7,8 +7,8 @@ import {
 } from "react";
 import asyncStorage from "@react-native-async-storage/async-storage";
 import { DEFAULT_EMAIL_KEY, TOKEN_KEY } from "../constants/keys";
-import api from "../services/api";
 import * as SplashScreen from "expo-splash-screen";
+import useGet from "@hooks/useGet";
 
 interface IUser {
   id: string;
@@ -26,7 +26,7 @@ interface IAuthContextData {
   user?: IUser;
   password: string | undefined;
   setPassword: (password: string) => void;
-  setToken: (token: string) => void;
+  setToken: (token: string) => Promise<void>;
   logout: () => void;
   defaultEmail: string | undefined;
 }
@@ -36,7 +36,7 @@ export const AuthContext = createContext({} as IAuthContextData);
 export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [token, setTokenState] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
-  const [user, setUser] = useState<IUser>();
+  const { data: user } = useGet<IUser>("/users", [token]);
   const [defaultEmail, setDefaultEmail] = useState<string | undefined>();
   const [isAppReady, setIsAppReady] = useState(false);
 
@@ -74,14 +74,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
 
   useEffect(() => {
     if (!token) return;
-
-    const getUser = async () => {
-      const { data } = await api.get("/users");
-
-      setUser(data);
-    };
-
-    getUser();
 
     const timeout = setTimeout(logout, 1000 * 60 * 59);
 
