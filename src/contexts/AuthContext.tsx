@@ -41,9 +41,9 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [isAppReady, setIsAppReady] = useState(false);
 
   const logout = async () => {
-    await asyncStorage.removeItem(TOKEN_KEY);
     setTokenState(undefined);
     setPassword(undefined);
+    await asyncStorage.removeItem(TOKEN_KEY);
   };
 
   useEffect(() => {
