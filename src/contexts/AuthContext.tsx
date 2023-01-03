@@ -6,15 +6,9 @@ import {
   useState,
 } from "react";
 import asyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { TabList } from "../App";
 import { DEFAULT_EMAIL_KEY, TOKEN_KEY } from "../constants/keys";
 import api from "../services/api";
 import * as SplashScreen from "expo-splash-screen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "../screens/Login";
-import Signup from "../screens/Signup";
 
 interface IUser {
   id: string;
@@ -34,43 +28,10 @@ interface IAuthContextData {
   setPassword: (password: string) => void;
   setToken: (token: string) => void;
   logout: () => void;
+  defaultEmail: string | undefined;
 }
 
 export const AuthContext = createContext({} as IAuthContextData);
-
-export type AuthStackList = {
-  Login: { defaultEmail?: string };
-  Signup: undefined;
-};
-
-const Stack = createNativeStackNavigator<AuthStackList>();
-
-const Wrapper = ({
-  children,
-  isAuthenticated,
-  defaultEmail,
-}: PropsWithChildren<{
-  isAuthenticated: boolean;
-  defaultEmail?: string;
-}>) => {
-  if (isAuthenticated) return <>{children}</>;
-
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-      initialRouteName={defaultEmail ? "Login" : "Signup"}
-    >
-      <Stack.Screen
-        initialParams={{ defaultEmail }}
-        name="Login"
-        component={Login}
-      />
-      <Stack.Screen name="Signup" component={Signup} />
-    </Stack.Navigator>
-  );
-};
 
 export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [token, setTokenState] = useState<string | undefined>();
@@ -78,13 +39,11 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [user, setUser] = useState<IUser>();
   const [defaultEmail, setDefaultEmail] = useState<string | undefined>();
   const [isAppReady, setIsAppReady] = useState(false);
-  const navigation = useNavigation<BottomTabNavigationProp<TabList>>();
 
   const logout = async () => {
     await asyncStorage.removeItem(TOKEN_KEY);
     setTokenState(undefined);
     setPassword(undefined);
-    navigation.navigate("Home");
   };
 
   useEffect(() => {
@@ -134,8 +93,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     setTokenState(token);
   };
 
-  const isAuthenticated = !!token && !!password;
-
   if (!isAppReady) return null;
 
   return (
@@ -148,11 +105,10 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         user,
         password,
         setPassword,
+        defaultEmail,
       }}
     >
-      <Wrapper defaultEmail={defaultEmail} isAuthenticated={isAuthenticated}>
-        {children}
-      </Wrapper>
+      {children}
     </AuthContext.Provider>
   );
 };

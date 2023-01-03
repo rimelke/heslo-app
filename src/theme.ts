@@ -18,6 +18,9 @@ const theme = {
       disabled: "#EE7E53",
       dark: "#964E31",
     },
+    red: {
+      500: "#ef4444",
+    },
   },
 };
 
