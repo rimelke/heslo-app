@@ -26,7 +26,7 @@ interface IAuthContextData {
   user?: IUser;
   password: string | undefined;
   setPassword: (password: string) => void;
-  setToken: (token: string) => Promise<void>;
+  setToken: (token: string) => void;
   logout: () => void;
   defaultEmail: string | undefined;
 }
