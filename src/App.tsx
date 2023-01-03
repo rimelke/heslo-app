@@ -9,6 +9,7 @@ import Folders from "./screens/Folders";
 import Profile from "./screens/Profile";
 import * as SplashScreen from "expo-splash-screen";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Tabs = createBottomTabNavigator();
 
@@ -60,36 +61,38 @@ const App = () => (
       },
     }}
   >
-    <AuthProvider>
-      <Tabs.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: theme.colors.flame.DEFAULT,
-          tabBarInactiveTintColor: theme.colors.floral.dark,
-          tabBarStyle: {
-            elevation: 0,
-            backgroundColor: theme.colors.floral.DEFAULT,
-            height: 60,
-            borderTopColor: theme.colors.floral.dark,
-            borderTopWidth: 1,
-          },
-        }}
-      >
-        {tabs.map((tab) => (
-          <Tabs.Screen
-            key={tab.name}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <tab.icon size={size} color={color} />
-              ),
-            }}
-            name={tab.name}
-            component={tab.component}
-          />
-        ))}
-      </Tabs.Navigator>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <Tabs.Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: theme.colors.flame.DEFAULT,
+            tabBarInactiveTintColor: theme.colors.floral.dark,
+            tabBarStyle: {
+              elevation: 0,
+              backgroundColor: theme.colors.floral.DEFAULT,
+              height: 60,
+              borderTopColor: theme.colors.floral.dark,
+              borderTopWidth: 1,
+            },
+          }}
+        >
+          {tabs.map((tab) => (
+            <Tabs.Screen
+              key={tab.name}
+              options={{
+                tabBarIcon: ({ color, size }) => (
+                  <tab.icon size={size} color={color} />
+                ),
+              }}
+              name={tab.name}
+              component={tab.component}
+            />
+          ))}
+        </Tabs.Navigator>
+      </AuthProvider>
+    </SafeAreaProvider>
   </NavigationContainer>
 );
 
