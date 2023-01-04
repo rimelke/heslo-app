@@ -1,7 +1,8 @@
 import { useAuth } from "@contexts/AuthContext";
+import { FoldersProvider } from "@contexts/FoldersContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Folders from "@screens/Folders";
+import FoldersRouter from "@screens/FoldersRouter";
 import Home from "@screens/Home";
 import Login from "@screens/Login";
 import Profile from "@screens/Profile";
@@ -12,7 +13,7 @@ import theme from "./theme";
 
 export type TabList = {
   Home: undefined;
-  Folders: undefined;
+  FoldersRouter: undefined;
   Profile: undefined;
 };
 
@@ -26,7 +27,7 @@ const Stack = createNativeStackNavigator<AuthStackList>();
 
 interface ITab {
   name: keyof TabList;
-  component: ComponentType;
+  component: any;
   icon: ComponentType<{
     size: number;
     color: string;
@@ -40,8 +41,8 @@ const tabs: ITab[] = [
     icon: HomeIcon,
   },
   {
-    name: "Folders",
-    component: Folders,
+    name: "FoldersRouter",
+    component: FoldersRouter,
     icon: FolderIcon,
   },
   {
@@ -72,34 +73,36 @@ const Router = () => {
     );
 
   return (
-    <Tabs.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: theme.colors.flame.DEFAULT,
-        tabBarInactiveTintColor: theme.colors.floral.dark,
-        tabBarStyle: {
-          elevation: 0,
-          backgroundColor: theme.colors.floral.DEFAULT,
-          height: 60,
-          borderTopColor: theme.colors.floral.dark,
-          borderTopWidth: 1,
-        },
-      }}
-    >
-      {tabs.map((tab) => (
-        <Tabs.Screen
-          key={tab.name}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <tab.icon size={size} color={color} />
-            ),
-          }}
-          name={tab.name}
-          component={tab.component}
-        />
-      ))}
-    </Tabs.Navigator>
+    <FoldersProvider>
+      <Tabs.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: theme.colors.flame.DEFAULT,
+          tabBarInactiveTintColor: theme.colors.floral.dark,
+          tabBarStyle: {
+            elevation: 0,
+            backgroundColor: theme.colors.floral.DEFAULT,
+            height: 60,
+            borderTopColor: theme.colors.floral.dark,
+            borderTopWidth: 1,
+          },
+        }}
+      >
+        {tabs.map((tab) => (
+          <Tabs.Screen
+            key={tab.name}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <tab.icon size={size} color={color} />
+              ),
+            }}
+            name={tab.name}
+            component={tab.component}
+          />
+        ))}
+      </Tabs.Navigator>
+    </FoldersProvider>
   );
 };
 
