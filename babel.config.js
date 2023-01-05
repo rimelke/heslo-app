@@ -27,6 +27,17 @@ module.exports = (api) => {
           alias,
         },
       ],
+      [
+        "module-resolver",
+        {
+          alias: {
+            crypto: "react-native-quick-crypto",
+            stream: "stream-browserify",
+            buffer: "@craftzdog/react-native-buffer",
+          },
+        },
+        "react-native-quick-crypto",
+      ],
     ],
   };
 };
