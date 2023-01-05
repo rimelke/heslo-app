@@ -1,3 +1,4 @@
+import BackArrow from "@components/BackArrow";
 import Entry from "@components/Entry";
 import Group from "@components/Group";
 import Loading from "@components/Loading";
@@ -6,9 +7,7 @@ import Title from "@components/Title";
 import { useFolders } from "@contexts/FoldersContext";
 import useGet from "@hooks/useGet";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { FlatList, TouchableOpacity, View } from "react-native";
-import { ArrowSmallLeftIcon } from "react-native-heroicons/solid";
-import theme from "src/theme";
+import { FlatList, View } from "react-native";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
 import { FoldersStackList } from ".";
@@ -26,15 +25,14 @@ const Folder = ({
 
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
+  const openEntry = (entry: IEntry) => {
+    navigation.navigate("Entry", { entry });
+  };
+
   return (
     <ScreenContainer>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity
-          style={{ marginRight: 16 }}
-          onPress={() => navigation.goBack()}
-        >
-          <ArrowSmallLeftIcon size={24} color={theme.colors.olive.DEFAULT} />
-        </TouchableOpacity>
+        <BackArrow />
 
         <Title>{folder?.title}</Title>
       </View>
@@ -46,7 +44,11 @@ const Folder = ({
           data={data}
           style={{ marginTop: 16 }}
           renderItem={({ item }) =>
-            "entries" in item ? <Group group={item} /> : <Entry entry={item} />
+            "entries" in item ? (
+              <Group openEntry={openEntry} group={item} />
+            ) : (
+              <Entry openEntry={openEntry} entry={item} />
+            )
           }
           keyExtractor={(item) => item.id}
         />

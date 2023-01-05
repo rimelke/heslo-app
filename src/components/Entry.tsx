@@ -5,13 +5,15 @@ import IEntry from "src/types/IEntry";
 
 interface EntryProps {
   entry: IEntry;
+  openEntry: (entry: IEntry) => void;
 }
 
-const Entry = ({ entry }: EntryProps) => {
+const Entry = ({ entry, openEntry }: EntryProps) => {
   const Icon = entry.type === "text" ? LockClosedIcon : DocumentIcon;
 
   return (
     <TouchableOpacity
+      onPress={() => openEntry(entry)}
       style={{
         flexDirection: "row",
         alignItems: "center",

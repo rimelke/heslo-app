@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { ChevronRightIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
+import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
 import Entry from "./Entry";
 
 interface GroupProps {
   group: IGroup;
+  openEntry: (entry: IEntry) => void;
 }
 
-const Group = ({ group }: GroupProps) => {
+const Group = ({ group, openEntry }: GroupProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -47,7 +49,7 @@ const Group = ({ group }: GroupProps) => {
         }}
       >
         {group.entries.map((entry) => (
-          <Entry entry={entry} key={entry.id} />
+          <Entry openEntry={openEntry} entry={entry} key={entry.id} />
         ))}
       </View>
     </TouchableOpacity>

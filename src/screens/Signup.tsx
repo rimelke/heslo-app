@@ -1,9 +1,16 @@
-import { Text, View } from "react-native";
+import Button from "@components/Button";
+import ScreenContainer from "@components/ScreenContainer";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Text } from "react-native";
+import { AuthStackList } from "src/Router";
 
-const Signup = () => (
-  <View>
+const Signup = ({
+  navigation,
+}: NativeStackScreenProps<AuthStackList, "Signup">) => (
+  <ScreenContainer>
     <Text>Signup</Text>
-  </View>
+    <Button onPress={() => navigation.navigate("Login", {})}>Login</Button>
+  </ScreenContainer>
 );
 
 export default Signup;
