@@ -1,4 +1,5 @@
 import Entry from "@components/Entry";
+import Group from "@components/Group";
 import Loading from "@components/Loading";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
@@ -9,6 +10,7 @@ import { FlatList, TouchableOpacity, View } from "react-native";
 import { ArrowSmallLeftIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
+import IGroup from "src/types/IGroup";
 import { FoldersStackList } from ".";
 
 const Folder = ({
@@ -18,7 +20,9 @@ const Folder = ({
   const { folderId } = route.params;
 
   const { folders } = useFolders();
-  const { data, isLoading } = useGet<IEntry[]>(`/folders/${folderId}/entries`);
+  const { data, isLoading } = useGet<(IEntry | IGroup)[]>(
+    `/folders/${folderId}/entries`
+  );
 
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
@@ -41,7 +45,9 @@ const Folder = ({
         <FlatList
           data={data}
           style={{ marginTop: 16 }}
-          renderItem={({ item }) => <Entry entry={item} />}
+          renderItem={({ item }) =>
+            "entries" in item ? <Group group={item} /> : <Entry entry={item} />
+          }
           keyExtractor={(item) => item.id}
         />
       )}
