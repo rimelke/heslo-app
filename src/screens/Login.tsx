@@ -14,6 +14,8 @@ import useRequest from "@hooks/useRequest";
 import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { AuthStackList } from "src/Router";
+import asyncStorage from "@react-native-async-storage/async-storage";
+import { DEFAULT_EMAIL_KEY, TOKEN_KEY } from "src/constants/keys";
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +42,7 @@ const Login = ({
 
     if (!result) return;
 
+    asyncStorage.setItem(DEFAULT_EMAIL_KEY, data.email);
     setToken(result.token);
     setPassword(data.password);
   };
