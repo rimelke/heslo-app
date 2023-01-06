@@ -6,28 +6,14 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Form } from "@unform/mobile";
 import { View } from "react-native";
 import { FoldersStackList } from ".";
-import aes256 from "aes256";
+import aes256 from "@utils/aes256";
 import { useAuth } from "@contexts/AuthContext";
-import { useEffect } from "react";
 
 const Entry = ({
   route,
 }: NativeStackScreenProps<FoldersStackList, "Entry">) => {
   const { entry } = route.params;
   const { password } = useAuth();
-
-  useEffect(() => {
-    console.log("content", entry.content);
-    console.log("password", password);
-    console.log("decrypted", aes256.decrypt(password || "", entry.content));
-    console.log(
-      "encrypted",
-      aes256.encrypt(
-        password || "",
-        aes256.decrypt(password || "", entry.content)
-      )
-    );
-  }, [entry]);
 
   return (
     <ScreenContainer>
