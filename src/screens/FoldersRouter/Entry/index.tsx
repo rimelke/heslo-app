@@ -16,6 +16,8 @@ import { z } from "zod";
 import useRequest from "@hooks/useRequest";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
+import TextInput from "./TextInput";
+import FileInput from "./FileInput";
 
 interface EntryData {
   title: string;
@@ -60,6 +62,11 @@ const Entry = ({ route, updateEntry, navigation }: Props) => {
     handleSubmit
   );
 
+  const initialData = {
+    ...entry,
+    content: aes256.decrypt(password || "", entry.content),
+  };
+
   return (
     <ScreenContainer>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -70,19 +77,15 @@ const Entry = ({ route, updateEntry, navigation }: Props) => {
       <Form
         ref={formRef}
         style={{ marginTop: 24 }}
-        initialData={{
-          ...entry,
-          content: aes256.decrypt(password || "", entry.content),
-        }}
+        initialData={initialData}
         onSubmit={formHandler}
       >
         <Input name="title" label="Title" placeholder="Type the title" />
-        <Input
-          style={{ marginTop: 16 }}
-          name="content"
-          label="Content"
-          placeholder="Type the content"
-        />
+        {entry.type === "text" ? (
+          <TextInput />
+        ) : (
+          <FileInput url={initialData.content} />
+        )}
         {error && (
           <Text style={{ color: theme.colors.red[500], marginTop: 24 }}>
             {error}
