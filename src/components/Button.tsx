@@ -21,7 +21,7 @@ const Button = ({ children, style, isLoading, disabled, ...props }: Props) => (
           : theme.colors.flame.DEFAULT,
         paddingHorizontal: 16,
         paddingVertical: 12,
-        borderRadius: 12,
+        borderRadius: 8,
         flexDirection: "row",
         justifyContent: "center",
       },

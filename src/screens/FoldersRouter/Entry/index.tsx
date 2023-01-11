@@ -4,8 +4,8 @@ import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Form } from "@unform/mobile";
-import { Text, View } from "react-native";
-import { FoldersStackList } from ".";
+import { Text, TouchableOpacity, View } from "react-native";
+import { FoldersStackList } from "..";
 import aes256 from "@utils/aes256";
 import { useAuth } from "@contexts/AuthContext";
 import Button from "@components/Button";
@@ -18,6 +18,8 @@ import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import TextInput from "./TextInput";
 import FileInput from "./FileInput";
+import { ClipboardIcon, TrashIcon } from "react-native-heroicons/solid";
+import * as Clipboard from "expo-clipboard";
 
 interface EntryData {
   title: string;
@@ -91,13 +93,36 @@ const Entry = ({ route, updateEntry, navigation }: Props) => {
             {error}
           </Text>
         )}
-        <Button
-          isLoading={isLoading}
-          onPress={() => formRef.current?.submitForm()}
-          style={{ marginTop: 24 }}
+        <View
+          style={{ marginTop: 24, flexDirection: "row", alignItems: "center" }}
         >
-          Save
-        </Button>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme.colors.olive.DEFAULT,
+              padding: 9,
+              borderRadius: 8,
+            }}
+          >
+            <TrashIcon size={24} color={theme.colors.floral.DEFAULT} />
+          </TouchableOpacity>
+          <Button
+            isLoading={isLoading}
+            onPress={() => formRef.current?.submitForm()}
+            style={{ flex: 1, marginHorizontal: 12 }}
+          >
+            Save
+          </Button>
+          <TouchableOpacity
+            onPress={() => Clipboard.setStringAsync(initialData.content)}
+            style={{
+              backgroundColor: theme.colors.olive.DEFAULT,
+              padding: 9,
+              borderRadius: 8,
+            }}
+          >
+            <ClipboardIcon size={24} color={theme.colors.floral.DEFAULT} />
+          </TouchableOpacity>
+        </View>
       </Form>
     </ScreenContainer>
   );

@@ -1,10 +1,6 @@
-import * as FileSystem from "expo-file-system";
 import * as Linking from "expo-linking";
 import { View, Text, TouchableOpacity } from "react-native";
-import {
-  ArrowDownTrayIcon,
-  ArrowTopRightOnSquareIcon,
-} from "react-native-heroicons/solid";
+import { ArrowTopRightOnSquareIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
 
 interface FileInputProps {
@@ -14,12 +10,11 @@ interface FileInputProps {
 const FileInput = ({ url }: FileInputProps) => {
   const fileName = url.substring(url.lastIndexOf("/") + 1);
 
-  console.log(FileSystem.documentDirectory);
-
   return (
     <View
       style={{
         flexDirection: "row",
+        justifyContent: "center",
         alignItems: "center",
         padding: 8,
         marginTop: 24,
@@ -48,14 +43,6 @@ const FileInput = ({ url }: FileInputProps) => {
           size={24}
           color={theme.colors.olive.DEFAULT}
         />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ marginLeft: 16 }}
-        onPress={() =>
-          FileSystem.downloadAsync(url, FileSystem.documentDirectory + fileName)
-        }
-      >
-        <ArrowDownTrayIcon size={24} color={theme.colors.olive.DEFAULT} />
       </TouchableOpacity>
     </View>
   );
