@@ -19,6 +19,7 @@ import { FoldersStackList } from ".";
 
 export interface FolderRef {
   updateEntry: (id: string, entry: IEntry) => void;
+  deleteEntry: (id: string) => void;
 }
 
 const FolderWithRef: ForwardRefRenderFunction<
@@ -35,13 +36,20 @@ const FolderWithRef: ForwardRefRenderFunction<
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
   const updateEntry = (id: string, entry: IEntry) => {
-    setData((data) => data?.map((item) => (item.id === id ? entry : item)));
+    setData((oldData) =>
+      oldData?.map((item) => (item.id === id ? entry : item))
+    );
+  };
+
+  const deleteEntry = (id: string) => {
+    setData((oldData) => oldData?.filter((item) => item.id !== id));
   };
 
   useImperativeHandle(
     ref,
     () => ({
       updateEntry,
+      deleteEntry,
     }),
     []
   );

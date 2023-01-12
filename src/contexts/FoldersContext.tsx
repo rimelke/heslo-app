@@ -15,7 +15,10 @@ interface IFoldersContextData {
   isFoldersLoading: boolean;
   totalEntries: number;
   addFolder: (newFolder: IFolder) => void;
-  updateFolder: (folderId: string, data: Partial<IFolder>) => void;
+  updateFolder: (
+    folderId: string,
+    data: Partial<IFolder> | ((folder: IFolder) => Partial<IFolder>)
+  ) => void;
   removeFolder: (folderId: string) => void;
 }
 
@@ -32,10 +35,15 @@ export const FoldersProvider = ({ children }: PropsWithChildren<{}>) => {
     setFolders((oldFolders) => oldFolders && [...oldFolders, newFolder]);
   };
 
-  const updateFolder = (folderId: string, data: Partial<IFolder>) => {
+  const updateFolder = (
+    folderId: string,
+    data: Partial<IFolder> | ((folder: IFolder) => Partial<IFolder>)
+  ) => {
     setFolders((oldFolders) =>
       oldFolders?.map((folder) =>
-        folder.id === folderId ? { ...folder, ...data } : folder
+        folder.id === folderId
+          ? { ...folder, ...(typeof data === "function" ? data(folder) : data) }
+          : folder
       )
     );
   };

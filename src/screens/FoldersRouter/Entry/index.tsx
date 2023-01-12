@@ -9,7 +9,7 @@ import { FoldersStackList } from "..";
 import aes256 from "@utils/aes256";
 import { useAuth } from "@contexts/AuthContext";
 import Button from "@components/Button";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FormHandles } from "@unform/core";
 import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
@@ -18,8 +18,9 @@ import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import TextInput from "./TextInput";
 import FileInput from "./FileInput";
-import { ClipboardIcon, TrashIcon } from "react-native-heroicons/solid";
+import { ClipboardIcon } from "react-native-heroicons/solid";
 import * as Clipboard from "expo-clipboard";
+import DeleteEntry from "./DeleteEntry";
 
 interface EntryData {
   title: string;
@@ -28,9 +29,10 @@ interface EntryData {
 
 type Props = NativeStackScreenProps<FoldersStackList, "Entry"> & {
   updateEntry: (id: string, entry: IEntry) => void;
+  deleteEntry: (id: string) => void;
 };
 
-const Entry = ({ route, updateEntry, navigation }: Props) => {
+const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
   const { entry } = route.params;
   const { password } = useAuth();
   const formRef = useRef<FormHandles>(null);
@@ -96,15 +98,11 @@ const Entry = ({ route, updateEntry, navigation }: Props) => {
         <View
           style={{ marginTop: 24, flexDirection: "row", alignItems: "center" }}
         >
-          <TouchableOpacity
-            style={{
-              backgroundColor: theme.colors.olive.DEFAULT,
-              padding: 9,
-              borderRadius: 8,
-            }}
-          >
-            <TrashIcon size={24} color={theme.colors.floral.DEFAULT} />
-          </TouchableOpacity>
+          <DeleteEntry
+            goToEntries={() => navigation.goBack()}
+            entry={entry}
+            deleteEntry={deleteEntry}
+          />
           <Button
             isLoading={isLoading}
             onPress={() => formRef.current?.submitForm()}

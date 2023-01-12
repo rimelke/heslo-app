@@ -20,6 +20,10 @@ const FoldersRouter = () => {
     folderRef.current?.updateEntry(id, entry);
   };
 
+  const deleteEntry = (id: string) => {
+    folderRef.current?.deleteEntry(id);
+  };
+
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
@@ -30,7 +34,13 @@ const FoldersRouter = () => {
         {(props) => <Folder {...props} ref={folderRef} />}
       </Stack.Screen>
       <Stack.Screen name="Entry">
-        {(props) => <Entry {...props} updateEntry={updateEntry} />}
+        {(props) => (
+          <Entry
+            {...props}
+            updateEntry={updateEntry}
+            deleteEntry={deleteEntry}
+          />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );

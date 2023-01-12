@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Router from "./Router";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +25,7 @@ const App = () => (
     <SafeAreaProvider>
       <AuthProvider>
         <Router />
+        <StatusBar backgroundColor={theme.colors.floral.DEFAULT} />
       </AuthProvider>
     </SafeAreaProvider>
   </NavigationContainer>

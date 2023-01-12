@@ -9,16 +9,25 @@ import theme from "../theme";
 interface Props extends TouchableOpacityProps {
   children: string;
   isLoading?: boolean;
+  colorScheme?: "flame" | "olive";
 }
 
-const Button = ({ children, style, isLoading, disabled, ...props }: Props) => (
+const Button = ({
+  children,
+  style,
+  isLoading,
+  disabled,
+  colorScheme = "flame",
+  ...props
+}: Props) => (
   <TouchableOpacity
     disabled={isLoading || disabled}
     style={[
       {
-        backgroundColor: isLoading
-          ? theme.colors.flame.disabled
-          : theme.colors.flame.DEFAULT,
+        backgroundColor:
+          isLoading || disabled
+            ? theme.colors[colorScheme].disabled
+            : theme.colors[colorScheme].DEFAULT,
         paddingHorizontal: 16,
         paddingVertical: 12,
         borderRadius: 8,
