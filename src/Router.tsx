@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Add from "@screens/Add";
+import AddFolder from "@screens/AddFolder";
 import FoldersRouter, { FoldersStackList } from "@screens/FoldersRouter";
 import Home from "@screens/Home";
 import Login from "@screens/Login";
@@ -12,6 +13,7 @@ import Signup from "@screens/Signup";
 import { View } from "react-native";
 import {
   FolderIcon,
+  FolderPlusIcon,
   HomeIcon,
   PlusCircleIcon,
   PlusIcon,
@@ -23,7 +25,7 @@ export type TabList = {
   Home: undefined;
   FoldersRouter: NavigatorScreenParams<FoldersStackList>;
   Add: undefined;
-  Sla: undefined;
+  AddFolder: undefined;
   Profile: undefined;
 };
 
@@ -73,6 +75,7 @@ const Router = () => {
   return (
     <FoldersProvider>
       <Tabs.Navigator
+        id="tabs"
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -115,11 +118,11 @@ const Router = () => {
         <Tabs.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
-              <FolderIcon size={size} color={color} />
+              <FolderPlusIcon size={size} color={color} />
             ),
           }}
-          name="Sla"
-          component={Home}
+          name="AddFolder"
+          component={AddFolder}
         />
         <Tabs.Screen
           options={{

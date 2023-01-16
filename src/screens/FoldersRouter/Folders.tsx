@@ -1,3 +1,4 @@
+import Button from "@components/Button";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useFolders, IFolder } from "@contexts/FoldersContext";
@@ -107,7 +108,7 @@ const FolderItem = ({ folder, index, goToFolder }: FolderItemProps) => (
 
 const Folders = ({
   navigation,
-}: NativeStackScreenProps<FoldersStackList, "Folders">) => {
+}: NativeStackScreenProps<FoldersStackList, "Folders", "tabs">) => {
   const { folders } = useFolders();
 
   return (
@@ -116,6 +117,14 @@ const Folders = ({
       <FlatList
         style={{ marginTop: 16 }}
         data={folders}
+        ListFooterComponent={
+          <Button
+            colorScheme="olive"
+            onPress={() => navigation.getParent("tabs")?.navigate("AddFolder")}
+          >
+            New folder
+          </Button>
+        }
         renderItem={({ item, index }) => (
           <FolderItem
             goToFolder={(folderId) =>
