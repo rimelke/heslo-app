@@ -8,7 +8,7 @@ interface FileInputProps {
 }
 
 const FileInput = ({ url }: FileInputProps) => {
-  const fileName = url.substring(url.lastIndexOf("/") + 1);
+  const fileName = decodeURIComponent(url.substring(url.lastIndexOf("/") + 1));
 
   return (
     <View

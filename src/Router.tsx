@@ -1,19 +1,29 @@
 import { useAuth } from "@contexts/AuthContext";
 import { FoldersProvider } from "@contexts/FoldersContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import FoldersRouter from "@screens/FoldersRouter";
+import Add from "@screens/Add";
+import FoldersRouter, { FoldersStackList } from "@screens/FoldersRouter";
 import Home from "@screens/Home";
 import Login from "@screens/Login";
 import Profile from "@screens/Profile";
 import Signup from "@screens/Signup";
-import { ComponentType } from "react";
-import { FolderIcon, HomeIcon, UserIcon } from "react-native-heroicons/solid";
+import { View } from "react-native";
+import {
+  FolderIcon,
+  HomeIcon,
+  PlusCircleIcon,
+  PlusIcon,
+  UserIcon,
+} from "react-native-heroicons/solid";
 import theme from "./theme";
 
 export type TabList = {
   Home: undefined;
-  FoldersRouter: undefined;
+  FoldersRouter: NavigatorScreenParams<FoldersStackList>;
+  Add: undefined;
+  Sla: undefined;
   Profile: undefined;
 };
 
@@ -25,32 +35,20 @@ export type AuthStackList = {
 const Tabs = createBottomTabNavigator<TabList>();
 const Stack = createNativeStackNavigator<AuthStackList>();
 
-interface ITab {
-  name: keyof TabList;
-  component: any;
-  icon: ComponentType<{
-    size: number;
-    color: string;
-  }>;
-}
-
-const tabs: ITab[] = [
-  {
-    name: "Home",
-    component: Home,
-    icon: HomeIcon,
-  },
-  {
-    name: "FoldersRouter",
-    component: FoldersRouter,
-    icon: FolderIcon,
-  },
-  {
-    name: "Profile",
-    component: Profile,
-    icon: UserIcon,
-  },
-];
+const AddButton = () => (
+  <View
+    style={{
+      padding: 14,
+      marginBottom: 32,
+      borderRadius: 9999,
+      backgroundColor: theme.colors.flame.DEFAULT,
+      borderWidth: 8,
+      borderColor: theme.colors.floral.DEFAULT,
+    }}
+  >
+    <PlusIcon size={28} color={theme.colors.floral.DEFAULT} />
+  </View>
+);
 
 const Router = () => {
   const { isAuthenticated, defaultEmail } = useAuth();
@@ -89,18 +87,49 @@ const Router = () => {
           },
         }}
       >
-        {tabs.map((tab) => (
-          <Tabs.Screen
-            key={tab.name}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <tab.icon size={size} color={color} />
-              ),
-            }}
-            name={tab.name}
-            component={tab.component}
-          />
-        ))}
+        <Tabs.Screen
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <HomeIcon size={size} color={color} />
+            ),
+          }}
+          name="Home"
+          component={Home}
+        />
+        <Tabs.Screen
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <FolderIcon size={size} color={color} />
+            ),
+          }}
+          name="FoldersRouter"
+          component={FoldersRouter}
+        />
+        <Tabs.Screen
+          options={{
+            tabBarIcon: AddButton,
+          }}
+          name="Add"
+          component={Add}
+        />
+        <Tabs.Screen
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <FolderIcon size={size} color={color} />
+            ),
+          }}
+          name="Sla"
+          component={Home}
+        />
+        <Tabs.Screen
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <UserIcon size={size} color={color} />
+            ),
+          }}
+          name="Profile"
+          component={Profile}
+        />
       </Tabs.Navigator>
     </FoldersProvider>
   );

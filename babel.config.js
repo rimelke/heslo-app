@@ -38,6 +38,7 @@ module.exports = (api) => {
         },
         "react-native-quick-crypto",
       ],
+      "inline-dotenv",
     ],
   };
 };

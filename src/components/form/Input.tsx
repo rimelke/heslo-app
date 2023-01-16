@@ -1,24 +1,7 @@
-import React, { useRef, useEffect, useCallback } from "react";
-import {
-  Text,
-  TextInput,
-  StyleSheet,
-  TextInputProps,
-  View,
-} from "react-native";
+import React, { useRef, useEffect } from "react";
+import { Text, TextInput, TextInputProps, View } from "react-native";
 import { useField } from "@unform/core";
 import theme from "../../theme";
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: theme.colors.floral.dark,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    color: theme.colors.olive.DEFAULT,
-  },
-});
 
 interface Props extends TextInputProps {
   name: string;
@@ -77,7 +60,14 @@ function Input({
           onChangeText(text);
         }}
         defaultValue={defaultValue}
-        style={styles.input}
+        style={{
+          borderWidth: 1,
+          borderColor: error ? theme.colors.red[500] : theme.colors.floral.dark,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 8,
+          color: theme.colors.olive.DEFAULT,
+        }}
       />
 
       {error && (

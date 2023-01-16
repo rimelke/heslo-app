@@ -9,7 +9,7 @@ import theme from "../theme";
 interface Props extends TouchableOpacityProps {
   children: string;
   isLoading?: boolean;
-  colorScheme?: "flame" | "olive";
+  colorScheme?: "flame" | "olive" | "floral-dark";
 }
 
 const Button = ({
