@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -9,7 +10,7 @@ import theme from "../theme";
 interface Props extends TouchableOpacityProps {
   children: string;
   isLoading?: boolean;
-  colorScheme?: "flame" | "olive" | "floral-dark";
+  colorScheme?: "flame" | "olive" | "floral-dark" | "floral";
 }
 
 const Button = ({
@@ -47,7 +48,10 @@ const Button = ({
 
     <Text
       style={{
-        color: theme.colors.floral.DEFAULT,
+        color:
+          colorScheme === "floral"
+            ? theme.colors.flame.DEFAULT
+            : theme.colors.floral.DEFAULT,
       }}
     >
       {children}

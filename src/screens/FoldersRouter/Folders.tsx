@@ -1,6 +1,7 @@
 import Button from "@components/Button";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
+import { useAuth } from "@contexts/AuthContext";
 import { useFolders, IFolder } from "@contexts/FoldersContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
@@ -110,6 +111,7 @@ const Folders = ({
   navigation,
 }: NativeStackScreenProps<FoldersStackList, "Folders", "tabs">) => {
   const { folders } = useFolders();
+  const { user } = useAuth();
 
   return (
     <ScreenContainer>
@@ -118,12 +120,16 @@ const Folders = ({
         style={{ marginTop: 16 }}
         data={folders}
         ListFooterComponent={
-          <Button
-            colorScheme="olive"
-            onPress={() => navigation.getParent("tabs")?.navigate("AddFolder")}
-          >
-            New folder
-          </Button>
+          user?.plan === "premium" ? (
+            <Button
+              colorScheme="olive"
+              onPress={() =>
+                navigation.getParent("tabs")?.navigate("AddFolder")
+              }
+            >
+              New folder
+            </Button>
+          ) : undefined
         }
         renderItem={({ item, index }) => (
           <FolderItem

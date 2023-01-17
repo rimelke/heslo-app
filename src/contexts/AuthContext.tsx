@@ -1,6 +1,8 @@
 import {
   createContext,
+  Dispatch,
   PropsWithChildren,
+  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -24,6 +26,7 @@ interface IAuthContextData {
   isAuthenticated: boolean;
   token: string | undefined;
   user?: IUser;
+  setUser: Dispatch<SetStateAction<IUser | undefined>>;
   password: string | undefined;
   setPassword: (password: string) => void;
   setToken: (token: string) => void;
@@ -36,7 +39,7 @@ export const AuthContext = createContext({} as IAuthContextData);
 export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   const [token, setTokenState] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
-  const { data: user } = useGet<IUser>("/users", [token]);
+  const { data: user, setData: setUser } = useGet<IUser>("/users", [token]);
   const [defaultEmail, setDefaultEmail] = useState<string | undefined>();
   const [isAppReady, setIsAppReady] = useState(false);
 
@@ -95,6 +98,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         setToken,
         logout,
         user,
+        setUser,
         password,
         setPassword,
         defaultEmail,

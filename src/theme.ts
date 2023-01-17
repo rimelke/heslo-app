@@ -11,6 +11,7 @@ const theme = {
       dark: "#CCC5B9",
       hover: "#FFF6D9",
       "dark-hover": "#bbb2a2",
+      disabled: "#E5E0D7",
     },
     "floral-dark": {
       DEFAULT: "#CCC5B9",

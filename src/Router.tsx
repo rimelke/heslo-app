@@ -10,8 +10,10 @@ import Home from "@screens/Home";
 import Login from "@screens/Login";
 import Profile from "@screens/Profile";
 import Signup from "@screens/Signup";
+import Upgrade from "@screens/Upgrade";
 import { View } from "react-native";
 import {
+  ArrowUpCircleIcon,
   FolderIcon,
   FolderPlusIcon,
   HomeIcon,
@@ -27,6 +29,7 @@ export type TabList = {
   Add: undefined;
   AddFolder: undefined;
   Profile: undefined;
+  Upgrade: undefined;
 };
 
 export type AuthStackList = {
@@ -53,7 +56,7 @@ const AddButton = () => (
 );
 
 const Router = () => {
-  const { isAuthenticated, defaultEmail } = useAuth();
+  const { isAuthenticated, defaultEmail, user } = useAuth();
 
   if (!isAuthenticated)
     return (
@@ -115,15 +118,27 @@ const Router = () => {
           name="Add"
           component={Add}
         />
-        <Tabs.Screen
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FolderPlusIcon size={size} color={color} />
-            ),
-          }}
-          name="AddFolder"
-          component={AddFolder}
-        />
+        {user?.plan === "premium" ? (
+          <Tabs.Screen
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FolderPlusIcon size={size} color={color} />
+              ),
+            }}
+            name="AddFolder"
+            component={AddFolder}
+          />
+        ) : (
+          <Tabs.Screen
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <ArrowUpCircleIcon size={size} color={color} />
+              ),
+            }}
+            name="Upgrade"
+            component={Upgrade}
+          />
+        )}
         <Tabs.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
