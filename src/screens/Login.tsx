@@ -68,12 +68,14 @@ const Login = ({
           <Logo />
         </View>
         <Title>Login</Title>
-        <Text
-          style={{ marginTop: 24, fontWeight: "600" }}
-          onPress={() => navigation.push("Signup")}
-        >
+        <Text style={{ marginTop: 24, fontWeight: "600", fontSize: 16 }}>
           Don't have an account?{" "}
-          <Text style={{ color: theme.colors.flame.DEFAULT }}>Sign up</Text>
+          <Text
+            onPress={() => navigation.replace("Signup")}
+            style={{ color: theme.colors.flame.DEFAULT }}
+          >
+            Sign up
+          </Text>
         </Text>
         <Input
           label="Email"

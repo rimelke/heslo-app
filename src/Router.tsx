@@ -10,6 +10,7 @@ import Home from "@screens/Home";
 import Login from "@screens/Login";
 import Profile from "@screens/Profile";
 import Signup from "@screens/Signup";
+import Success from "@screens/Success";
 import Upgrade from "@screens/Upgrade";
 import { View } from "react-native";
 import {
@@ -35,6 +36,7 @@ export type TabList = {
 export type AuthStackList = {
   Login: { defaultEmail?: string };
   Signup: undefined;
+  Success: undefined;
 };
 
 const Tabs = createBottomTabNavigator<TabList>();
@@ -72,6 +74,7 @@ const Router = () => {
           component={Login}
         />
         <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Success" component={Success} />
       </Stack.Navigator>
     );
 
