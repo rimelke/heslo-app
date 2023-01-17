@@ -23,11 +23,7 @@ const LastSection = () => {
 
   if (isLastLoading && !isReady) return <Loading />;
 
-  return (
-    <View style={{ marginTop: 24 }}>
-      <EntriesList title="Last accessed" entries={sortedLastEntries} />
-    </View>
-  );
+  return <EntriesList title="Last accessed" entries={sortedLastEntries} />;
 };
 
 export default LastSection;

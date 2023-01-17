@@ -1,8 +1,7 @@
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
-import useGet from "@hooks/useGet";
-import IEntry from "src/types/IEntry";
+import { ScrollView } from "react-native";
 import CountsSection from "./CountsSection";
 import LastSection from "./LastSection";
 import RecentSection from "./RecentSection";
@@ -16,9 +15,11 @@ const Home = () => {
 
       <CountsSection />
 
-      <LastSection />
+      <ScrollView style={{ marginTop: 24 }}>
+        <LastSection />
 
-      <RecentSection />
+        <RecentSection />
+      </ScrollView>
     </ScreenContainer>
   );
 };
