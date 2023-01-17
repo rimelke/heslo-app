@@ -1,3 +1,4 @@
+import addLastId from "@utils/addLastId";
 import { Text, TouchableOpacity } from "react-native";
 import { DocumentIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
@@ -13,7 +14,10 @@ const Entry = ({ entry, openEntry }: EntryProps) => {
 
   return (
     <TouchableOpacity
-      onPress={() => openEntry(entry)}
+      onPress={() => {
+        addLastId(entry.id);
+        openEntry(entry);
+      }}
       style={{
         flexDirection: "row",
         alignItems: "center",
