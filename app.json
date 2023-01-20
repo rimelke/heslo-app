@@ -3,6 +3,7 @@
     "name": "app",
     "slug": "app",
     "version": "1.0.0",
+    "scheme": "hesloio",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "entryPoint": "./src/App.tsx",
@@ -15,9 +16,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -26,7 +25,20 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFCF2"
       },
-      "package": "io.heslo.app"
+      "package": "io.heslo.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.heslo.io"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
