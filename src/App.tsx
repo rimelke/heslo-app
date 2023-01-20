@@ -17,6 +17,7 @@ const App = () => (
         screens: {
           Signup: { path: "signup" },
           Login: { path: "login" },
+          Activate: { path: "signup/activate" },
         },
       },
     }}

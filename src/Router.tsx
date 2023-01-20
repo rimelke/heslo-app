@@ -7,10 +7,10 @@ import Add from "@screens/Add";
 import AddFolder from "@screens/AddFolder";
 import FoldersRouter, { FoldersStackList } from "@screens/FoldersRouter";
 import Home from "@screens/Home";
-import Login from "@screens/Login";
+import Login from "@screens/Auth/Login";
 import Profile from "@screens/Profile";
-import Signup from "@screens/Signup";
-import Success from "@screens/Success";
+import Signup from "@screens/Auth/Signup";
+import Success from "@screens/Auth/Success";
 import Upgrade from "@screens/Upgrade";
 import { View } from "react-native";
 import {
@@ -18,11 +18,12 @@ import {
   FolderIcon,
   FolderPlusIcon,
   HomeIcon,
-  PlusCircleIcon,
   PlusIcon,
   UserIcon,
 } from "react-native-heroicons/solid";
 import theme from "./theme";
+import Activate from "@screens/Auth/Activate";
+import Plan from "@screens/Auth/Plan";
 
 export type TabList = {
   Home: undefined;
@@ -37,6 +38,8 @@ export type AuthStackList = {
   Login: { defaultEmail?: string };
   Signup: undefined;
   Success: undefined;
+  Activate: { token?: string };
+  Plan: undefined;
 };
 
 const Tabs = createBottomTabNavigator<TabList>();
@@ -75,6 +78,8 @@ const Router = () => {
         />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Success" component={Success} />
+        <Stack.Screen name="Activate" component={Activate} />
+        <Stack.Screen name="Plan" component={Plan} />
       </Stack.Navigator>
     );
 

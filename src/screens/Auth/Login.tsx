@@ -6,7 +6,7 @@ import Input from "@components/form/Input";
 import Button from "@components/Button";
 import Title from "@components/Title";
 import Logo from "@components/Logo";
-import theme from "../theme";
+import theme from "src/theme";
 import { Form } from "@unform/mobile";
 import { useRef } from "react";
 import { FormHandles } from "@unform/core/typings/types";
@@ -15,7 +15,7 @@ import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { AuthStackList } from "src/Router";
 import asyncStorage from "@react-native-async-storage/async-storage";
-import { DEFAULT_EMAIL_KEY, TOKEN_KEY } from "src/constants/keys";
+import { DEFAULT_EMAIL_KEY } from "src/constants/keys";
 
 const styles = StyleSheet.create({
   container: {
