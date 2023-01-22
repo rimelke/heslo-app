@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
+    "name": "Heslo",
+    "slug": "heslo",
     "version": "1.0.0",
     "scheme": "hesloio",
     "orientation": "portrait",
@@ -16,9 +16,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.heslo.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +39,10 @@
               "host": "app.heslo.io"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -45,7 +51,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "9629c4e2-acbc-485d-b4da-0440206aaee7"
+        "projectId": "45c715bb-2cba-4e84-a9b6-6236c601d2f5"
       }
     }
   }

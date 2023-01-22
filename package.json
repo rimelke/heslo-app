@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "heslo.app",
   "version": "1.0.0",
   "scripts": {
     "dev": "expo start --dev-client",
