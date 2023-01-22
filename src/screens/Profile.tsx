@@ -8,7 +8,7 @@ import { Image, Text, View } from "react-native";
 import theme from "src/theme";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { folders } = useFolders();
 
   return (
@@ -85,6 +85,21 @@ const Profile = () => {
               {new Date(user.createdAt).toLocaleDateString()}
             </Text>
           </Text>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: theme.colors.floral.dark,
+              alignSelf: "stretch",
+              margin: 24,
+            }}
+          />
+          <Button
+            style={{ paddingHorizontal: 48 }}
+            colorScheme="olive"
+            onPress={logout}
+          >
+            Log out
+          </Button>
         </View>
       ) : (
         <Loading />
