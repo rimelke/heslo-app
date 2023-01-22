@@ -1,6 +1,7 @@
 import Button from "@components/Button";
 import Logo from "@components/Logo";
 import ScreenContainer from "@components/ScreenContainer";
+import { useAuth } from "@contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
@@ -12,6 +13,7 @@ interface ErrorScreenProps {
 }
 
 const ErrorScreen = ({ error }: ErrorScreenProps) => {
+  const { defaultEmail } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackList>>();
 
   return (
@@ -38,7 +40,7 @@ const ErrorScreen = ({ error }: ErrorScreenProps) => {
         >
           Error: {error}
         </Text>
-        <Button onPress={() => navigation.navigate("Login", {})}>
+        <Button onPress={() => navigation.navigate("Login", { defaultEmail })}>
           Go to login
         </Button>
       </View>

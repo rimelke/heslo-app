@@ -14,8 +14,6 @@ import useRequest from "@hooks/useRequest";
 import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { AuthStackList } from "src/Router";
-import asyncStorage from "@react-native-async-storage/async-storage";
-import { DEFAULT_EMAIL_KEY } from "src/constants/keys";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,14 +33,14 @@ const Login = ({
 }: NativeStackScreenProps<AuthStackList, "Login">) => {
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest("/users/login");
-  const { setPassword, setToken } = useAuth();
+  const { setPassword, setToken, setDefaultEmail } = useAuth();
 
   const handleSubmit = async (data: ILoginData) => {
     const result = await sendRequest(data);
 
     if (!result) return;
 
-    asyncStorage.setItem(DEFAULT_EMAIL_KEY, data.email);
+    setDefaultEmail(data.email);
     setToken(result.token);
     setPassword(data.password);
   };

@@ -26,13 +26,14 @@ const Signup = ({
 }: NativeStackScreenProps<AuthStackList, "Signup">) => {
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest("/users");
-  const { defaultEmail } = useAuth();
+  const { defaultEmail, setDefaultEmail } = useAuth();
 
   const handleSubmit = async (data: ISignupData) => {
     const result = await sendRequest(data);
 
     if (!result) return;
 
+    setDefaultEmail(data.email);
     navigation.navigate("Success");
   };
 

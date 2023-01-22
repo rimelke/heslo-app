@@ -48,7 +48,12 @@ const Item = ({ children, type = "success" }: PropsWithChildren<ItemProps>) => {
   );
 };
 
-const FreeCard = () => (
+interface FreeCardProps {
+  isActive?: boolean;
+  startFreeAction?: () => void;
+}
+
+const FreeCard = ({ isActive, startFreeAction }: FreeCardProps) => (
   <View
     style={{
       borderWidth: 1,
@@ -69,23 +74,33 @@ const FreeCard = () => (
       <Item type="error">No files</Item>
       <Item type="error">No groups</Item>
     </View>
-    <View
-      style={{
-        backgroundColor: theme.colors.olive.disabled,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderRadius: 8,
-        marginTop: 24,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <CheckCircleIcon size={24} color={theme.colors.floral.DEFAULT} />
-      <Text style={{ marginLeft: 8, color: theme.colors.floral.DEFAULT }}>
-        Current plan
-      </Text>
-    </View>
+    {isActive ? (
+      <View
+        style={{
+          backgroundColor: theme.colors.olive.disabled,
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          borderRadius: 8,
+          marginTop: 24,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CheckCircleIcon size={24} color={theme.colors.floral.DEFAULT} />
+        <Text style={{ marginLeft: 8, color: theme.colors.floral.DEFAULT }}>
+          Current plan
+        </Text>
+      </View>
+    ) : (
+      <Button
+        onPress={startFreeAction}
+        colorScheme="olive"
+        style={{ marginTop: 24 }}
+      >
+        Start free
+      </Button>
+    )}
   </View>
 );
 

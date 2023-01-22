@@ -1,8 +1,8 @@
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useState } from "react";
-import FreeCard from "./FreeCard";
-import PremiumCard from "./PremiumCard";
+import FreeCard from "@components/FreeCard";
+import PremiumCard from "@components/PremiumCard";
 import { WebView } from "react-native-webview";
 import { useAuth } from "@contexts/AuthContext";
 import theme from "src/theme";
@@ -53,7 +53,7 @@ const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
       <Title>Maybe an upgrade is</Title>
       <Title>what you need</Title>
 
-      <FreeCard />
+      <FreeCard isActive />
 
       <PremiumCard onGoPremium={() => setIsCheckoutOpen(true)} />
     </ScreenContainer>

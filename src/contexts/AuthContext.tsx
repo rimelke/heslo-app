@@ -32,6 +32,7 @@ interface IAuthContextData {
   setToken: (token: string) => void;
   logout: () => void;
   defaultEmail: string | undefined;
+  setDefaultEmail: (email: string) => void;
 }
 
 export const AuthContext = createContext({} as IAuthContextData);
@@ -88,6 +89,11 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     setTokenState(token);
   };
 
+  const handleSetDefaultEmail = async (email: string) => {
+    await asyncStorage.setItem(DEFAULT_EMAIL_KEY, email);
+    setDefaultEmail(email);
+  };
+
   if (!isAppReady) return null;
 
   return (
@@ -102,6 +108,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         password,
         setPassword,
         defaultEmail,
+        setDefaultEmail: handleSetDefaultEmail,
       }}
     >
       {children}
