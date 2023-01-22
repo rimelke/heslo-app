@@ -6,13 +6,51 @@ import { useAuth } from "@contexts/AuthContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import WebView from "react-native-webview";
 import { AuthStackList } from "src/Router";
+import theme from "src/theme";
 
 const Plan = ({
   navigation,
 }: NativeStackScreenProps<AuthStackList, "Plan">) => {
-  const { defaultEmail } = useAuth();
+  const { defaultEmail, setUser, token } = useAuth();
   const [isPremiumOpen, setIsPremiumOpen] = useState(false);
+
+  const handleCheckoutChange = (url: string): boolean => {
+    if (!url.includes("/login")) return true;
+
+    setIsPremiumOpen(false);
+
+    if (url.includes("result=success")) {
+      setUser((oldUser) => oldUser && { ...oldUser, plan: "premium" });
+      const email = new URL(url).searchParams.get("email");
+      navigation.navigate("Login", { defaultEmail: email || defaultEmail });
+    }
+
+    return false;
+  };
+
+  if (isPremiumOpen)
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <WebView
+          onShouldStartLoadWithRequest={(state) =>
+            handleCheckoutChange(state.url)
+          }
+          source={{
+            uri: `${
+              process.env.API_URL || "http://10.0.2.2:3000/api"
+            }/payments/checkout`,
+            headers: {
+              Cookie: `heslo.token=${token}`,
+            },
+          }}
+          style={{ backgroundColor: theme.colors.floral.DEFAULT }}
+          startInLoadingState
+        />
+      </SafeAreaView>
+    );
 
   return (
     <ScreenContainer>
