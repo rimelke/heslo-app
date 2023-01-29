@@ -49,7 +49,7 @@ const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
     );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <Title>Maybe an upgrade is</Title>
       <Title>what you need</Title>
 

@@ -53,7 +53,7 @@ const Plan = ({
     );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <View
         style={{
           flex: 1,

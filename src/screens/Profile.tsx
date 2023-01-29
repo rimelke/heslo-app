@@ -12,7 +12,7 @@ const Profile = () => {
   const { folders } = useFolders();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <Title>Your profile</Title>
       {user ? (
         <View style={{ marginTop: 24, alignItems: "center" }}>

@@ -104,7 +104,7 @@ const Add = ({ navigation }: BottomTabScreenProps<TabList, "Add">) => {
   );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <Title>Add an entry</Title>
       <View
         style={{

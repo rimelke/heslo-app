@@ -52,7 +52,7 @@ const Signup = ({
   );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <Form
         ref={formRef}
         onSubmit={formHandler}

@@ -15,7 +15,7 @@ const Success = ({
   const { defaultEmail } = useAuth();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer withScroll>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <View style={{ alignSelf: "stretch", height: 60, marginBottom: 48 }}>
           <Logo />
