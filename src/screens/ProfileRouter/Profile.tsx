@@ -4,10 +4,14 @@ import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
 import { useFolders } from "@contexts/FoldersContext";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Image, Text, View } from "react-native";
 import theme from "src/theme";
+import { ProfileStackList } from ".";
 
-const Profile = () => {
+const Profile = ({
+  navigation,
+}: NativeStackScreenProps<ProfileStackList, "Profile">) => {
   const { user, logout } = useAuth();
   const { folders } = useFolders();
 
@@ -40,7 +44,12 @@ const Profile = () => {
           >
             {user.slogan}
           </Text>
-          <Button colorScheme="olive">Change your password</Button>
+          <Button
+            colorScheme="olive"
+            onPress={() => navigation.navigate("ChangePassword")}
+          >
+            Change your password
+          </Button>
           <View
             style={{
               borderBottomWidth: 1,

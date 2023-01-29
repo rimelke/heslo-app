@@ -1,11 +1,13 @@
 import { PropsWithChildren } from "react";
-import { Text } from "react-native";
+import { Text, Dimensions } from "react-native";
 import theme from "../theme";
+
+const { width } = Dimensions.get("window");
 
 const Title = ({ children }: PropsWithChildren<{}>) => (
   <Text
     style={{
-      fontSize: 24,
+      fontSize: width < 400 ? 20 : 24,
       color: theme.colors.olive.dark,
     }}
   >

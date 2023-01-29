@@ -8,7 +8,6 @@ import AddFolder from "@screens/AddFolder";
 import FoldersRouter, { FoldersStackList } from "@screens/FoldersRouter";
 import Home from "@screens/Home";
 import Login from "@screens/Auth/Login";
-import Profile from "@screens/Profile";
 import Signup from "@screens/Auth/Signup";
 import Success from "@screens/Auth/Success";
 import Upgrade from "@screens/Upgrade";
@@ -24,13 +23,14 @@ import {
 import theme from "./theme";
 import Activate from "@screens/Auth/Activate";
 import Plan from "@screens/Auth/Plan";
+import ProfileRouter, { ProfileStackList } from "@screens/ProfileRouter";
 
 export type TabList = {
   Home: undefined;
   FoldersRouter: NavigatorScreenParams<FoldersStackList>;
   Add: undefined;
   AddFolder: undefined;
-  Profile: undefined;
+  ProfileRouter: NavigatorScreenParams<ProfileStackList>;
   Upgrade: undefined;
 };
 
@@ -153,8 +153,8 @@ const Router = () => {
               <UserIcon size={size} color={color} />
             ),
           }}
-          name="Profile"
-          component={Profile}
+          name="ProfileRouter"
+          component={ProfileRouter}
         />
       </Tabs.Navigator>
     </FoldersProvider>
