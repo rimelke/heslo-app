@@ -1,7 +1,9 @@
 import Button from "@components/Button";
 import Modal from "@components/Modal";
+import { useAuth } from "@contexts/AuthContext";
 import { useFolders } from "@contexts/FoldersContext";
 import useRequest from "@hooks/useRequest";
+import deleteFile from "@utils/deleteFile";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { TrashIcon } from "react-native-heroicons/solid";
@@ -21,10 +23,13 @@ const DeleteEntry = ({ entry, goToEntries, deleteEntry }: DeleteEntryProps) => {
     "delete"
   );
   const { updateFolder } = useFolders();
+  const { password = "" } = useAuth();
 
   const handleClose = () => setIsOpen(false);
 
   const handleSubmit = async () => {
+    const { type, content } = entry;
+
     const wasSuccessful = await sendRequest();
 
     if (!wasSuccessful) return;
@@ -35,6 +40,10 @@ const DeleteEntry = ({ entry, goToEntries, deleteEntry }: DeleteEntryProps) => {
     }));
     handleClose();
     goToEntries();
+
+    if (type !== "file") return;
+
+    await deleteFile(content, password);
   };
 
   return (
