@@ -13,8 +13,8 @@ import {
   ForwardRefRenderFunction,
   useImperativeHandle,
 } from "react";
-import { FlatList, View } from "react-native";
-import { PlusIcon } from "react-native-heroicons/solid";
+import { FlatList, Text, View } from "react-native";
+import { ArchiveBoxIcon, PlusIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
@@ -33,9 +33,11 @@ const FolderWithRef: ForwardRefRenderFunction<
   const { folderId } = route.params;
 
   const { folders } = useFolders();
-  const { data, isLoading, setData } = useGet<(IEntry | IGroup)[]>(
-    `/folders/${folderId}/entries`
-  );
+  const {
+    data = [],
+    isLoading,
+    setData,
+  } = useGet<(IEntry | IGroup)[]>(`/folders/${folderId}/entries`);
 
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
@@ -79,7 +81,7 @@ const FolderWithRef: ForwardRefRenderFunction<
 
       {isLoading ? (
         <Loading />
-      ) : (
+      ) : data.length > 0 ? (
         <FlatList
           data={data}
           style={{ marginTop: 16 }}
@@ -106,6 +108,33 @@ const FolderWithRef: ForwardRefRenderFunction<
             </Button>
           }
         />
+      ) : (
+        <View
+          style={{
+            marginTop: 48,
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <ArchiveBoxIcon size={56} color={theme.colors.olive.DEFAULT} />
+          <Text
+            style={{
+              color: theme.colors.olive.DEFAULT,
+              fontSize: 18,
+              fontWeight: "bold",
+              marginTop: 12,
+            }}
+          >
+            No entries found
+          </Text>
+          <Button
+            onPress={() => navigation.getParent("tabs")?.navigate("Add")}
+            colorScheme="olive"
+            style={{ marginTop: 28, paddingHorizontal: 32 }}
+          >
+            + New Entry
+          </Button>
+        </View>
       )}
     </ScreenContainer>
   );
