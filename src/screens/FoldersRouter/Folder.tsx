@@ -74,7 +74,7 @@ const FolderWithRef: ForwardRefRenderFunction<
   return (
     <ScreenContainer>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <BackArrow />
+        <BackArrow onPress={() => navigation.navigate("Folders")} />
 
         <Title>{folder?.title}</Title>
       </View>

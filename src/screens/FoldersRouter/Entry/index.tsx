@@ -74,7 +74,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
   return (
     <ScreenContainer>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <BackArrow />
+        <BackArrow onPress={navigation.goBack} />
 
         <Title>{entry.title}</Title>
       </View>

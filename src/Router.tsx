@@ -116,6 +116,7 @@ const Router = () => {
             tabBarIcon: ({ color, size }) => (
               <HomeIcon size={size} color={color} />
             ),
+            unmountOnBlur: true,
           }}
           name="Home"
           component={Home}
