@@ -6,7 +6,7 @@ import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
 import { useRef, useState } from "react";
 import { Text, View } from "react-native";
-import { EntryType } from "src/types/IEntry";
+import IEntry, { EntryType } from "src/types/IEntry";
 import Upload, { FileType } from "@components/form/Upload";
 import api from "@services/api";
 import * as FileSystem from "expo-file-system";
@@ -44,7 +44,11 @@ interface AddData {
   file?: FileType;
 }
 
-const Add = ({ navigation }: BottomTabScreenProps<TabList, "Add">) => {
+interface AddProps extends BottomTabScreenProps<TabList, "Add"> {
+  addEntry: (entry: IEntry) => void;
+}
+
+const Add = ({ navigation, addEntry }: AddProps) => {
   const formRef = useRef<FormHandles>(null);
   const [selectedType, setSelectedType] = useState<EntryType>("text");
   const { password } = useAuth();
@@ -79,10 +83,12 @@ const Add = ({ navigation }: BottomTabScreenProps<TabList, "Add">) => {
         [selectedType]: (folder.counts[selectedType] || 0) + 1,
       },
     }));
+    addEntry(result);
     navigation.navigate("FoldersRouter", {
       screen: "Folder",
       params: { folderId: result.folderId },
     });
+
     formRef.current?.reset();
   };
 

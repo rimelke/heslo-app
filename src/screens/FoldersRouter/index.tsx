@@ -1,5 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useRef } from "react";
+import {
+  forwardRef,
+  ForwardRefRenderFunction,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import IEntry from "src/types/IEntry";
 import Entry from "./Entry";
 import Folder, { FolderRef } from "./Folder";
@@ -13,8 +18,27 @@ export type FoldersStackList = {
 
 const Stack = createNativeStackNavigator<FoldersStackList>();
 
-const FoldersRouter = () => {
+export interface FoldersRouterRef {
+  addEntry: (entry: IEntry) => void;
+}
+
+const FoldersRouterWithRef: ForwardRefRenderFunction<FoldersRouterRef, {}> = (
+  _props,
+  ref
+) => {
   const folderRef = useRef<FolderRef>(null);
+
+  const addEntry = (entry: IEntry) => {
+    folderRef.current?.addEntry(entry);
+  };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      addEntry,
+    }),
+    []
+  );
 
   const updateEntry = (id: string, entry: IEntry) => {
     folderRef.current?.updateEntry(id, entry);
@@ -28,6 +52,7 @@ const FoldersRouter = () => {
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName="Folders"
+      id="folders"
     >
       <Stack.Screen name="Folders" component={Folders} />
       <Stack.Screen name="Folder">
@@ -45,5 +70,7 @@ const FoldersRouter = () => {
     </Stack.Navigator>
   );
 };
+
+const FoldersRouter = forwardRef(FoldersRouterWithRef);
 
 export default FoldersRouter;

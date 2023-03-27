@@ -21,6 +21,7 @@ import IGroup from "src/types/IGroup";
 import { FoldersStackList } from ".";
 
 export interface FolderRef {
+  addEntry: (entry: IEntry) => void;
   updateEntry: (id: string, entry: IEntry) => void;
   deleteEntry: (id: string) => void;
 }
@@ -38,6 +39,12 @@ const FolderWithRef: ForwardRefRenderFunction<
 
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
+  const addEntry = (entry: IEntry) => {
+    if (entry.folderId !== folderId) return;
+
+    setData((oldData) => oldData && [...oldData, entry]);
+  };
+
   const updateEntry = (id: string, entry: IEntry) => {
     setData((oldData) =>
       oldData?.map((item) => (item.id === id ? entry : item))
@@ -51,6 +58,7 @@ const FolderWithRef: ForwardRefRenderFunction<
   useImperativeHandle(
     ref,
     () => ({
+      addEntry,
       updateEntry,
       deleteEntry,
     }),

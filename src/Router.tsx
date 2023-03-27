@@ -5,7 +5,10 @@ import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Add from "@screens/Add";
 import AddFolder from "@screens/AddFolder";
-import FoldersRouter, { FoldersStackList } from "@screens/FoldersRouter";
+import FoldersRouter, {
+  FoldersRouterRef,
+  FoldersStackList,
+} from "@screens/FoldersRouter";
 import Home from "@screens/Home";
 import Login from "@screens/Auth/Login";
 import Signup from "@screens/Auth/Signup";
@@ -24,6 +27,8 @@ import theme from "./theme";
 import Activate from "@screens/Auth/Activate";
 import Plan from "@screens/Auth/Plan";
 import ProfileRouter, { ProfileStackList } from "@screens/ProfileRouter";
+import { useRef } from "react";
+import IEntry from "./types/IEntry";
 
 export type TabList = {
   Home: undefined;
@@ -62,6 +67,7 @@ const AddButton = () => (
 
 const Router = () => {
   const { isAuthenticated, defaultEmail, user } = useAuth();
+  const foldersRouterRef = useRef<FoldersRouterRef>(null);
 
   if (!isAuthenticated)
     return (
@@ -82,6 +88,10 @@ const Router = () => {
         <Stack.Screen name="Plan" component={Plan} />
       </Stack.Navigator>
     );
+
+  const addEntry = (entry: IEntry) => {
+    foldersRouterRef.current?.addEntry(entry);
+  };
 
   return (
     <FoldersProvider>
@@ -117,15 +127,17 @@ const Router = () => {
             ),
           }}
           name="FoldersRouter"
-          component={FoldersRouter}
-        />
+        >
+          {(props) => <FoldersRouter {...props} ref={foldersRouterRef} />}
+        </Tabs.Screen>
         <Tabs.Screen
           options={{
             tabBarIcon: AddButton,
           }}
           name="Add"
-          component={Add}
-        />
+        >
+          {(props) => <Add {...props} addEntry={addEntry} />}
+        </Tabs.Screen>
         {user?.plan === "premium" ? (
           <Tabs.Screen
             options={{
