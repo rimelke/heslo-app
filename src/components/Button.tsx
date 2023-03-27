@@ -8,7 +8,6 @@ import {
 import theme from "../theme";
 
 interface Props extends TouchableOpacityProps {
-  children: string;
   isLoading?: boolean;
   colorScheme?: "flame" | "olive" | "floral-dark" | "floral";
 }
@@ -20,7 +19,7 @@ const Button = ({
   disabled,
   colorScheme = "flame",
   ...props
-}: Props) => (
+}: PropsWithChildren<Props>) => (
   <TouchableOpacity
     disabled={isLoading || disabled}
     style={[

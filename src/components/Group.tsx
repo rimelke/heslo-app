@@ -22,7 +22,7 @@ const Group = ({ group, openEntry }: GroupProps) => {
         paddingTop: 16,
         borderWidth: 1,
         borderColor: theme.colors.floral.dark,
-        borderRadius: 16,
+        borderRadius: 8,
         marginBottom: 16,
       }}
     >

@@ -1,4 +1,5 @@
 import BackArrow from "@components/BackArrow";
+import Button from "@components/Button";
 import Entry from "@components/Entry";
 import Group from "@components/Group";
 import Loading from "@components/Loading";
@@ -13,6 +14,8 @@ import {
   useImperativeHandle,
 } from "react";
 import { FlatList, View } from "react-native";
+import { PlusIcon } from "react-native-heroicons/solid";
+import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
 import { FoldersStackList } from ".";
@@ -24,7 +27,7 @@ export interface FolderRef {
 
 const FolderWithRef: ForwardRefRenderFunction<
   FolderRef,
-  NativeStackScreenProps<FoldersStackList, "Folder">
+  NativeStackScreenProps<FoldersStackList, "Folder", "tabs">
 > = ({ route, navigation }, ref) => {
   const { folderId } = route.params;
 
@@ -80,6 +83,20 @@ const FolderWithRef: ForwardRefRenderFunction<
             )
           }
           keyExtractor={(item) => item.id}
+          ListFooterComponent={
+            <Button
+              onPress={() => navigation.getParent("tabs")?.navigate("Add")}
+              colorScheme="floral"
+              style={{
+                borderColor: theme.colors.floral.dark,
+                borderWidth: 1,
+                borderStyle: "dashed",
+                paddingVertical: 16,
+              }}
+            >
+              <PlusIcon size={28} color={theme.colors.olive.dark} />
+            </Button>
+          }
         />
       )}
     </ScreenContainer>
