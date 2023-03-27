@@ -2,7 +2,7 @@
   "expo": {
     "name": "Heslo",
     "slug": "heslo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "hesloio",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,9 +16,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "io.heslo.app"
@@ -39,10 +37,7 @@
               "host": "app.heslo.io"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },

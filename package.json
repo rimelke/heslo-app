@@ -1,9 +1,11 @@
 {
   "name": "heslo.app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "expo start --dev-client",
     "build:dev": "eas build --profile development --platform android",
+    "build:android": "eas build --profile production --platform android",
+    "build:ios": "eas build --profile production --platform ios",
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios"

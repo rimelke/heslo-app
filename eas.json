@@ -14,7 +14,12 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "FILES_CDN_URL": "https://files.heslo.io",
+        "API_URL": "https://app.heslo.io/api"
+      }
+    }
   },
   "submit": {
     "production": {}
