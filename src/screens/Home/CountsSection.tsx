@@ -1,9 +1,17 @@
+import Loading from "@components/Loading";
 import { useFolders } from "@contexts/FoldersContext";
 import { Text, View } from "react-native";
 import Count from "./Count";
 
 const CountsSection = () => {
-  const { folders = [] } = useFolders();
+  const { folders = [], isFoldersLoading } = useFolders();
+
+  if (isFoldersLoading)
+    return (
+      <View style={{ marginTop: 24 }}>
+        <Loading />
+      </View>
+    );
 
   const counts = folders.reduce(
     (acc, folder) => ({
