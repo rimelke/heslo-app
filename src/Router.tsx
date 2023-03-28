@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Add from "@screens/Add";
-import AddFolder from "@screens/AddFolder";
+import SecondaryAdd from "@screens/SecondaryAdd";
 import FoldersRouter, {
   FoldersRouterRef,
   FoldersStackList,
@@ -18,9 +18,9 @@ import { View } from "react-native";
 import {
   ArrowUpCircleIcon,
   FolderIcon,
-  FolderPlusIcon,
   HomeIcon,
   PlusIcon,
+  SquaresPlusIcon,
   UserIcon,
 } from "react-native-heroicons/solid";
 import theme from "./theme";
@@ -29,12 +29,13 @@ import Plan from "@screens/Auth/Plan";
 import ProfileRouter, { ProfileStackList } from "@screens/ProfileRouter";
 import { useRef } from "react";
 import IEntry from "./types/IEntry";
+import IGroup from "./types/IGroup";
 
 export type TabList = {
   Home: undefined;
   FoldersRouter: NavigatorScreenParams<FoldersStackList>;
   Add: undefined;
-  AddFolder: undefined;
+  SecondaryAdd: undefined;
   ProfileRouter: NavigatorScreenParams<ProfileStackList>;
   Upgrade: undefined;
 };
@@ -89,8 +90,8 @@ const Router = () => {
       </Stack.Navigator>
     );
 
-  const addEntry = (entry: IEntry) => {
-    foldersRouterRef.current?.addEntry(entry);
+  const addItem = (item: IEntry | IGroup) => {
+    foldersRouterRef.current?.addItem(item);
   };
 
   const updateEntriesPassword = (oldPassword: string, newPassword: string) => {
@@ -141,18 +142,19 @@ const Router = () => {
           }}
           name="Add"
         >
-          {(props) => <Add {...props} addEntry={addEntry} />}
+          {(props) => <Add {...props} addEntry={addItem} />}
         </Tabs.Screen>
         {user?.plan === "premium" ? (
           <Tabs.Screen
             options={{
               tabBarIcon: ({ color, size }) => (
-                <FolderPlusIcon size={size} color={color} />
+                <SquaresPlusIcon size={size} color={color} />
               ),
             }}
-            name="AddFolder"
-            component={AddFolder}
-          />
+            name="SecondaryAdd"
+          >
+            {(props) => <SecondaryAdd {...props} addGroup={addItem} />}
+          </Tabs.Screen>
         ) : (
           <Tabs.Screen
             options={{

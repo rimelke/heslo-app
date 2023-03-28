@@ -8,8 +8,6 @@ import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import IEntry, { EntryType } from "src/types/IEntry";
 import Upload, { FileType } from "@components/form/Upload";
-import api from "@services/api";
-import * as FileSystem from "expo-file-system";
 import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { useAuth } from "@contexts/AuthContext";
@@ -20,22 +18,7 @@ import { useFolders } from "@contexts/FoldersContext";
 import theme from "src/theme";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabList } from "src/Router";
-
-const uploadFile = async (rawFile: FileType) => {
-  const { data } = await api.post("/upload", {
-    fileName: rawFile.name,
-  });
-
-  await FileSystem.uploadAsync(data.url, rawFile.uri, {
-    httpMethod: "PUT",
-    uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-    headers: {
-      "Content-Type": rawFile.type,
-    },
-  });
-
-  return encodeURI(`${process.env.FILES_CDN_URL}${data.path}`);
-};
+import uploadFile from "@utils/uploadFile";
 
 interface AddData {
   title: string;

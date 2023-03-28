@@ -22,7 +22,7 @@ import IGroup from "src/types/IGroup";
 import { FoldersStackList } from ".";
 
 export interface FolderRef {
-  addEntry: (entry: IEntry) => void;
+  addItem: (item: IEntry | IGroup) => void;
   updateEntry: (id: string, entry: IEntry) => void;
   deleteEntry: (id: string) => void;
   updateEntriesPassword: (oldPassword: string, newPassword: string) => void;
@@ -43,10 +43,10 @@ const FolderWithRef: ForwardRefRenderFunction<
 
   const folder = folders?.find((folder) => folder.id === route.params.folderId);
 
-  const addEntry = (entry: IEntry) => {
-    if (entry.folderId !== folderId) return;
+  const addItem = (item: IEntry | IGroup) => {
+    if (item.folderId !== folderId) return;
 
-    setData((oldData) => oldData && [...oldData, entry]);
+    setData((oldData) => oldData && [...oldData, item]);
   };
 
   const updateEntry = (id: string, entry: IEntry) => {
@@ -83,7 +83,7 @@ const FolderWithRef: ForwardRefRenderFunction<
   useImperativeHandle(
     ref,
     () => ({
-      addEntry,
+      addItem,
       updateEntry,
       deleteEntry,
       updateEntriesPassword,

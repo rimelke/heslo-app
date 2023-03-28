@@ -16,6 +16,7 @@ const ScreenContainer = ({
     <SafeAreaView
       style={{
         padding: 24,
+        paddingBottom: 32,
         flex: 1,
       }}
     >
