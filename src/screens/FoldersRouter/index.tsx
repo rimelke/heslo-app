@@ -6,6 +6,7 @@ import {
   useRef,
 } from "react";
 import IEntry from "src/types/IEntry";
+import IGroup from "src/types/IGroup";
 import Entry from "./Entry";
 import Folder, { FolderRef } from "./Folder";
 import Folders from "./Folders";
@@ -13,7 +14,7 @@ import Folders from "./Folders";
 export type FoldersStackList = {
   Folders: undefined;
   Folder: { folderId: string };
-  Entry: { entry: IEntry };
+  Entry: { entry: IEntry; group?: IGroup };
 };
 
 const Stack = createNativeStackNavigator<FoldersStackList>();

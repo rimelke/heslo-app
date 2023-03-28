@@ -18,9 +18,17 @@ import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import TextInput from "./TextInput";
 import FileInput from "./FileInput";
-import { ClipboardIcon } from "react-native-heroicons/solid";
+import {
+  ChevronRightIcon,
+  ClipboardIcon,
+  DocumentIcon,
+  FolderIcon,
+  LockClosedIcon,
+  RectangleGroupIcon,
+} from "react-native-heroicons/solid";
 import * as Clipboard from "expo-clipboard";
 import DeleteEntry from "./DeleteEntry";
+import { useFolders } from "@contexts/FoldersContext";
 
 interface EntryData {
   title: string;
@@ -33,13 +41,16 @@ type Props = NativeStackScreenProps<FoldersStackList, "Entry"> & {
 };
 
 const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
-  const { entry } = route.params;
+  const { entry, group } = route.params;
   const { password } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest(
     `/entries/${entry.id}`,
     "patch"
   );
+  const { folders = [] } = useFolders();
+
+  const folder = folders.find((folder) => folder.id === entry.folderId);
 
   const handleSubmit = async (data: EntryData) => {
     if (!password) return;
@@ -77,6 +88,74 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
         <BackArrow onPress={navigation.goBack} />
 
         <Title>{entry.title}</Title>
+      </View>
+      <View
+        style={{
+          marginTop: 12,
+          flexDirection: "row",
+          alignItems: "center",
+          opacity: 0.7,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <FolderIcon size={20} color={theme.colors.olive.DEFAULT} />
+          <Text
+            style={{
+              color: theme.colors.olive.DEFAULT,
+              marginLeft: 4,
+              fontWeight: "bold",
+            }}
+          >
+            {folder?.title}
+          </Text>
+        </View>
+        <ChevronRightIcon
+          style={{ marginHorizontal: 8 }}
+          size={16}
+          color={theme.colors.olive.DEFAULT}
+        />
+
+        {group && (
+          <>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RectangleGroupIcon
+                size={20}
+                color={theme.colors.olive.DEFAULT}
+              />
+              <Text
+                style={{
+                  color: theme.colors.olive.DEFAULT,
+                  marginLeft: 4,
+                  fontWeight: "bold",
+                }}
+              >
+                {group.title}
+              </Text>
+            </View>
+            <ChevronRightIcon
+              style={{ marginHorizontal: 8 }}
+              size={16}
+              color={theme.colors.olive.DEFAULT}
+            />
+          </>
+        )}
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {entry.type === "text" ? (
+            <LockClosedIcon size={20} color={theme.colors.olive.DEFAULT} />
+          ) : (
+            <DocumentIcon size={20} color={theme.colors.olive.DEFAULT} />
+          )}
+          <Text
+            style={{
+              color: theme.colors.olive.DEFAULT,
+              marginLeft: 4,
+              fontWeight: "bold",
+            }}
+          >
+            {entry.title}
+          </Text>
+        </View>
       </View>
       <Form
         ref={formRef}

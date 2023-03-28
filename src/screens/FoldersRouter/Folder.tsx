@@ -92,7 +92,14 @@ const FolderWithRef: ForwardRefRenderFunction<
   );
 
   const openEntry = (entry: IEntry) => {
-    navigation.navigate("Entry", { entry });
+    const group = entry.groupId
+      ? (data?.find((item) => item.id === entry.groupId) as IGroup)
+      : undefined;
+
+    navigation.navigate("Entry", {
+      entry,
+      group,
+    });
   };
 
   return (
