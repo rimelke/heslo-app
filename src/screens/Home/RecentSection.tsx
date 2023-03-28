@@ -1,3 +1,4 @@
+import Loading from "@components/Loading";
 import useGet from "@hooks/useGet";
 import { View } from "react-native";
 import IEntry from "src/types/IEntry";
@@ -7,6 +8,8 @@ const RecentSection = () => {
   const { data: recentEntries = [], isLoading: isRecentLoading } = useGet<
     IEntry[]
   >("/entries?sort=createdAt_desc");
+
+  if (isRecentLoading) return <Loading />;
 
   return (
     <View style={{ marginTop: 24 }}>

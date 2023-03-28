@@ -21,7 +21,7 @@ const LastSection = () => {
     ? lastEntries.sort((a, b) => lastIds.indexOf(a.id) - lastIds.indexOf(b.id))
     : lastEntries;
 
-  if (isLastLoading && !isReady) return <Loading />;
+  if (isLastLoading || !isReady) return <Loading />;
 
   return <EntriesList title="Last accessed" entries={sortedLastEntries} />;
 };
