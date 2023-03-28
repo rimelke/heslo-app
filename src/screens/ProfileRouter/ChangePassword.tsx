@@ -20,9 +20,15 @@ interface ChangePasswordData {
   newPassword: string;
 }
 
+interface ChangePasswordProps
+  extends NativeStackScreenProps<ProfileStackList, "ChangePassword"> {
+  onChangePassword: (oldPassword: string, newPassword: string) => void;
+}
+
 const ChangePassword = ({
   navigation,
-}: NativeStackScreenProps<ProfileStackList, "ChangePassword">) => {
+  onChangePassword,
+}: ChangePasswordProps) => {
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest(
     "/users/password",
@@ -36,6 +42,7 @@ const ChangePassword = ({
     if (!wasSuccessful) return;
 
     setPassword(data.newPassword);
+    onChangePassword(data.oldPassword, data.newPassword);
     navigation.navigate("Profile");
   };
 

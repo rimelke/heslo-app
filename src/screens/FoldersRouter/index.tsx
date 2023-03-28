@@ -20,6 +20,7 @@ const Stack = createNativeStackNavigator<FoldersStackList>();
 
 export interface FoldersRouterRef {
   addEntry: (entry: IEntry) => void;
+  updateEntriesPassword: (oldPassword: string, newPassword: string) => void;
 }
 
 const FoldersRouterWithRef: ForwardRefRenderFunction<FoldersRouterRef, {}> = (
@@ -32,10 +33,15 @@ const FoldersRouterWithRef: ForwardRefRenderFunction<FoldersRouterRef, {}> = (
     folderRef.current?.addEntry(entry);
   };
 
+  const updateEntriesPassword = (oldPassword: string, newPassword: string) => {
+    folderRef.current?.updateEntriesPassword(oldPassword, newPassword);
+  };
+
   useImperativeHandle(
     ref,
     () => ({
       addEntry,
+      updateEntriesPassword,
     }),
     []
   );

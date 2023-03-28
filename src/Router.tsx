@@ -93,6 +93,10 @@ const Router = () => {
     foldersRouterRef.current?.addEntry(entry);
   };
 
+  const updateEntriesPassword = (oldPassword: string, newPassword: string) => {
+    foldersRouterRef.current?.updateEntriesPassword(oldPassword, newPassword);
+  };
+
   return (
     <FoldersProvider>
       <Tabs.Navigator
@@ -167,8 +171,14 @@ const Router = () => {
             ),
           }}
           name="ProfileRouter"
-          component={ProfileRouter}
-        />
+        >
+          {(props) => (
+            <ProfileRouter
+              {...props}
+              updateEntriesPassword={updateEntriesPassword}
+            />
+          )}
+        </Tabs.Screen>
       </Tabs.Navigator>
     </FoldersProvider>
   );

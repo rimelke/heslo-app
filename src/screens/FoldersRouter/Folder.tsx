@@ -8,6 +8,7 @@ import Title from "@components/Title";
 import { useFolders } from "@contexts/FoldersContext";
 import useGet from "@hooks/useGet";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import aes256 from "@utils/aes256";
 import {
   forwardRef,
   ForwardRefRenderFunction,
@@ -24,6 +25,7 @@ export interface FolderRef {
   addEntry: (entry: IEntry) => void;
   updateEntry: (id: string, entry: IEntry) => void;
   deleteEntry: (id: string) => void;
+  updateEntriesPassword: (oldPassword: string, newPassword: string) => void;
 }
 
 const FolderWithRef: ForwardRefRenderFunction<
@@ -57,12 +59,34 @@ const FolderWithRef: ForwardRefRenderFunction<
     setData((oldData) => oldData?.filter((item) => item.id !== id));
   };
 
+  const updateEntriesPassword = (oldPassword: string, newPassword: string) => {
+    const getUpdatedEntry = (entry: IEntry): IEntry => ({
+      ...entry,
+      content: aes256.encrypt(
+        newPassword,
+        aes256.decrypt(oldPassword, entry.content)
+      ),
+    });
+
+    setData((oldData) =>
+      oldData?.map((item) =>
+        "entries" in item
+          ? {
+              ...item,
+              entries: item.entries.map(getUpdatedEntry),
+            }
+          : getUpdatedEntry(item)
+      )
+    );
+  };
+
   useImperativeHandle(
     ref,
     () => ({
       addEntry,
       updateEntry,
       deleteEntry,
+      updateEntriesPassword,
     }),
     []
   );
