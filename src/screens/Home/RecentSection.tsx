@@ -9,7 +9,12 @@ const RecentSection = () => {
     IEntry[]
   >("/entries?sort=createdAt_desc");
 
-  if (isRecentLoading) return <Loading />;
+  if (isRecentLoading)
+    return (
+      <View style={{ marginTop: 24 }}>
+        <Loading />
+      </View>
+    );
 
   return (
     <View style={{ marginTop: 24 }}>
