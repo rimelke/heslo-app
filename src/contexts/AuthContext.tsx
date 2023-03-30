@@ -11,6 +11,7 @@ import asyncStorage from "@react-native-async-storage/async-storage";
 import { DEFAULT_EMAIL_KEY, TOKEN_KEY } from "../constants/keys";
 import * as SplashScreen from "expo-splash-screen";
 import useGet from "@hooks/useGet";
+import api from "@services/api";
 
 interface IUser {
   id: string;
@@ -20,6 +21,7 @@ interface IUser {
   plan: "free" | "premium";
   createdAt: Date;
   email: string;
+  paymentId?: string;
 }
 
 interface IAuthContextData {
@@ -33,6 +35,7 @@ interface IAuthContextData {
   logout: () => void;
   defaultEmail: string | undefined;
   setDefaultEmail: (email: string) => void;
+  refreshToken: () => void;
 }
 
 export const AuthContext = createContext({} as IAuthContextData);
@@ -94,6 +97,23 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     setDefaultEmail(email);
   };
 
+  const refreshToken = async () => {
+    const email = user?.email || defaultEmail;
+
+    if (!password || !email) return;
+
+    try {
+      const { data } = await api.post("/users/login", {
+        email,
+        password,
+      });
+
+      setToken(data.token);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (!isAppReady) return null;
 
   return (
@@ -109,6 +129,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         setPassword,
         defaultEmail,
         setDefaultEmail: handleSetDefaultEmail,
+        refreshToken,
       }}
     >
       {children}

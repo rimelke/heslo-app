@@ -12,16 +12,17 @@ import { TabList } from "src/Router";
 
 const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const { token, setUser } = useAuth();
+  const { token, setUser, refreshToken } = useAuth();
 
   const handleCheckoutChange = (url: string): boolean => {
-    if (!url.includes("/login")) return true;
+    if (!url.includes("result=")) return true;
 
     setIsCheckoutOpen(false);
 
     if (url.includes("result=success")) {
       setUser((oldUser) => oldUser && { ...oldUser, plan: "premium" });
-      navigation.navigate("Profile");
+      navigation.navigate("ProfileRouter", { screen: "Profile" });
+      refreshToken();
     }
 
     return false;

@@ -5,17 +5,50 @@ import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
 import { useFolders } from "@contexts/FoldersContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { Image, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import WebView from "react-native-webview";
 import theme from "src/theme";
 import { ProfileStackList } from ".";
 
 const Profile = ({
   navigation,
 }: NativeStackScreenProps<ProfileStackList, "Profile">) => {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const { folders } = useFolders();
+  const [isPaymentsOpen, setIsPaymentsOpen] = useState(false);
 
   if (!user) return <Loading />;
+
+  const handleCheckoutChange = (url: string): boolean => {
+    if (!url.includes("result=")) return true;
+
+    setIsPaymentsOpen(false);
+
+    return false;
+  };
+
+  if (isPaymentsOpen)
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <WebView
+          onShouldStartLoadWithRequest={(state) =>
+            handleCheckoutChange(state.url)
+          }
+          source={{
+            uri: `${
+              process.env.API_URL || "http://10.0.2.2:3000/api"
+            }/payments/portal?returnUrl=true`,
+            headers: {
+              Cookie: `heslo.token=${token}`,
+            },
+          }}
+          style={{ backgroundColor: theme.colors.floral.DEFAULT }}
+          startInLoadingState
+        />
+      </SafeAreaView>
+    );
 
   return (
     <ScreenContainer withScroll>
@@ -96,12 +129,13 @@ const Profile = ({
           </Text>
         </Text>
 
-        {user.plan === "premium" && (
+        {user.paymentId && (
           <Button
             style={{
               marginTop: 24,
             }}
             colorScheme="olive"
+            onPress={() => setIsPaymentsOpen(true)}
           >
             Access payments
           </Button>
