@@ -7,13 +7,14 @@ const useGet = <T = any>(
   params?: any
 ) => {
   const [data, setData] = useState<T>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (dependencies.some((dependency) => !dependency)) return;
 
     const getData = async () => {
       try {
+        setIsLoading(true);
         setData(undefined);
 
         const { data: newData } = await api.get<T>(path, { params });

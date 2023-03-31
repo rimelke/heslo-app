@@ -15,6 +15,9 @@ import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { AuthStackList } from "src/Router";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as Keychain from "react-native-keychain";
+import crypto from "react-native-quick-crypto";
+import aes256 from "@utils/aes256";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +25,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+const salt = "4fea4a8a2d205e135e00907d80b8507abe8164bf";
 
 interface ILoginData {
   email: string;
@@ -34,13 +39,21 @@ const Login = ({
 }: NativeStackScreenProps<AuthStackList, "Login">) => {
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest("/users/login");
-  const { setPassword, setToken, setDefaultEmail } = useAuth();
+  const { setPassword, setToken, setDefaultEmail, user, defaultEmail } =
+    useAuth();
 
   const handleSubmit = async (data: ILoginData) => {
     const result = await sendRequest(data);
 
     if (!result) return;
 
+    const saltedData = crypto
+      .createHash("sha256")
+      .update(`${salt}${data.email.trim().toLowerCase()}`)
+      .digest("base64");
+    const encryptedPassword = aes256.encrypt(saltedData, data.password);
+
+    await Keychain.setGenericPassword(data.email, encryptedPassword);
     setDefaultEmail(data.email);
     setToken(result.token);
     setPassword(data.password);
@@ -49,6 +62,14 @@ const Login = ({
   useEffect(() => {
     const checkForLocalAuth = async () => {
       try {
+        const email = user?.email || defaultEmail;
+
+        if (!email) return;
+
+        const genericPassword = await Keychain.getGenericPassword();
+
+        if (!genericPassword || genericPassword.username !== email) return;
+
         const hasHardware = await LocalAuthentication.hasHardwareAsync();
         if (!hasHardware) return;
 
@@ -58,7 +79,14 @@ const Login = ({
         const result = await LocalAuthentication.authenticateAsync();
         if (!result.success) return;
 
-        console.log("success", result);
+        const saltedData = crypto
+          .createHash("sha256")
+          .update(`${salt}${email.trim().toLowerCase()}`)
+          .digest("base64");
+
+        const password = aes256.decrypt(saltedData, genericPassword.password);
+
+        handleSubmit({ email, password });
       } catch (err) {
         console.error(err);
       }
