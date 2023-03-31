@@ -24,7 +24,8 @@ import {
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
-import { FoldersStackList } from ".";
+import { FoldersStackList } from "..";
+import DeleteFolder from "./DeleteFolder";
 
 export interface FolderRef {
   addItem: (item: IEntry | IGroup) => void;
@@ -127,16 +128,10 @@ const FolderWithRef: ForwardRefRenderFunction<
           >
             <PencilIcon size={16} color={theme.colors.floral.DEFAULT} />
           </Button>
-          <Button
-            style={{
-              paddingVertical: 12,
-              paddingHorizontal: 12,
-              marginLeft: 8,
-            }}
-            colorScheme="olive"
-          >
-            <TrashIcon size={16} color={theme.colors.floral.DEFAULT} />
-          </Button>
+          <DeleteFolder
+            folderId={folderId}
+            goToFolders={() => navigation.replace("Folders")}
+          />
         </View>
       </View>
 
