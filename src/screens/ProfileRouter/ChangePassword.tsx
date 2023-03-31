@@ -81,7 +81,12 @@ const ChangePassword = ({
         <Title>Change your password</Title>
       </View>
       <Form ref={formRef} onSubmit={formHandler} style={{ marginTop: 24 }}>
-        <Input name="oldPassword" label="Old password" secureTextEntry />
+        <Input
+          name="oldPassword"
+          label="Old password"
+          secureTextEntry
+          placeholder="Old password"
+        />
         <Input
           secureTextEntry
           style={{
@@ -90,11 +95,13 @@ const ChangePassword = ({
           }}
           name="newPassword"
           label="New password"
+          placeholder="New password"
         />
         <Input
           name="repeatPassword"
           secureTextEntry
           label="Repeat new password"
+          placeholder="Repeat new password"
           style={{ marginBottom: 24 }}
         />
         {error && (

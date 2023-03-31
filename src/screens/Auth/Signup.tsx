@@ -19,6 +19,7 @@ interface ISignupData {
   name: string;
   email: string;
   password: string;
+  repeatPassword: string;
 }
 
 const Signup = ({
@@ -28,7 +29,10 @@ const Signup = ({
   const { error, isLoading, sendRequest } = useRequest("/users");
   const { defaultEmail, setDefaultEmail } = useAuth();
 
-  const handleSubmit = async (data: ISignupData) => {
+  const handleSubmit = async ({
+    repeatPassword: _repeatPassword,
+    ...data
+  }: ISignupData) => {
     const result = await sendRequest(data);
 
     if (!result) return;
@@ -47,6 +51,12 @@ const Signup = ({
         .string({ required_error: "Password is required" })
         .min(8, "Password must be at least 8 characters long"),
       name: z.string({ required_error: "Name is required" }),
+      repeatPassword: z
+        .string({ required_error: "Repeat password is required" })
+        .refine(
+          (value) => value === formRef.current?.getFieldValue("password"),
+          "Passwords must match"
+        ),
     }),
     handleSubmit
   );
@@ -91,6 +101,13 @@ const Signup = ({
           name="password"
           style={{ marginTop: 12 }}
           placeholder="Password"
+          secureTextEntry
+        />
+        <Input
+          label="Repeat password"
+          name="repeatPassword"
+          style={{ marginTop: 12 }}
+          placeholder="Repeat password"
           secureTextEntry
         />
         {error && (
