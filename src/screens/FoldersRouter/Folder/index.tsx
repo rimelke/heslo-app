@@ -5,6 +5,7 @@ import Group from "@components/Group";
 import Loading from "@components/Loading";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
+import { useAuth } from "@contexts/AuthContext";
 import { useFolders } from "@contexts/FoldersContext";
 import useGet from "@hooks/useGet";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -40,6 +41,7 @@ const FolderWithRef: ForwardRefRenderFunction<
 > = ({ route, navigation }, ref) => {
   const { folderId } = route.params;
 
+  const { user } = useAuth();
   const { folders } = useFolders();
   const {
     data = [],
@@ -115,24 +117,30 @@ const FolderWithRef: ForwardRefRenderFunction<
 
         <Title>{folder?.title}</Title>
 
-        <View
-          style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
-        >
-          <Button
-            onPress={() => navigation.navigate("EditFolder", { folderId })}
+        {user?.plan === "premium" && (
+          <View
             style={{
-              paddingVertical: 12,
-              paddingHorizontal: 12,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
             }}
-            colorScheme="olive"
           >
-            <PencilIcon size={16} color={theme.colors.floral.DEFAULT} />
-          </Button>
-          <DeleteFolder
-            folderId={folderId}
-            goToFolders={() => navigation.replace("Folders")}
-          />
-        </View>
+            <Button
+              onPress={() => navigation.navigate("EditFolder", { folderId })}
+              style={{
+                paddingVertical: 12,
+                paddingHorizontal: 12,
+              }}
+              colorScheme="olive"
+            >
+              <PencilIcon size={16} color={theme.colors.floral.DEFAULT} />
+            </Button>
+            <DeleteFolder
+              folderId={folderId}
+              goToFolders={() => navigation.replace("Folders")}
+            />
+          </View>
+        )}
       </View>
 
       {isLoading ? (
