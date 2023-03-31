@@ -1,4 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, {
+  useRef,
+  useEffect,
+  ForwardRefRenderFunction,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { Text, TextInput, TextInputProps, View } from "react-native";
 import { useField } from "@unform/core";
 import theme from "../../theme";
@@ -8,13 +14,10 @@ interface Props extends TextInputProps {
   label?: string;
 }
 
-function Input({
-  name,
-  label,
-  onChangeText = () => {},
-  style,
-  ...rest
-}: Props) {
+const InputWithRef: ForwardRefRenderFunction<TextInput, Props> = (
+  { name, label, onChangeText = () => {}, style, ...rest },
+  passedRef
+) => {
   const { fieldName, registerField, defaultValue, error, clearError } =
     useField(name);
 
@@ -41,6 +44,8 @@ function Input({
       },
     });
   }, [fieldName, registerField]);
+
+  useImperativeHandle(passedRef, () => inputRef.current as TextInput, []);
 
   return (
     <View style={style}>
@@ -77,6 +82,8 @@ function Input({
       )}
     </View>
   );
-}
+};
+
+const Input = forwardRef(InputWithRef);
 
 export default Input;

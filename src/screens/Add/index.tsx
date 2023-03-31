@@ -20,6 +20,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabList } from "src/Router";
 import uploadFile from "@utils/uploadFile";
 import PremiumPlaceholder from "@components/PremiumPlaceholder";
+import TextInput from "./TextInput";
 
 interface AddData {
   title: string;
@@ -139,11 +140,7 @@ const Add = ({ navigation, addEntry }: AddProps) => {
                 })) || []
               }
             />
-            {selectedType === "text" ? (
-              <Input name="content" label="Content" multiline />
-            ) : (
-              <Upload name="file" />
-            )}
+            {selectedType === "text" ? <TextInput /> : <Upload name="file" />}
 
             {error && (
               <Text style={{ color: theme.colors.red[500], marginTop: 24 }}>
