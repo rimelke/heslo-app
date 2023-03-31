@@ -15,7 +15,12 @@ import {
   useImperativeHandle,
 } from "react";
 import { FlatList, Text, View } from "react-native";
-import { ArchiveBoxIcon, PlusIcon } from "react-native-heroicons/solid";
+import {
+  ArchiveBoxIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+} from "react-native-heroicons/solid";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
@@ -105,9 +110,34 @@ const FolderWithRef: ForwardRefRenderFunction<
   return (
     <ScreenContainer>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <BackArrow onPress={() => navigation.navigate("Folders")} />
+        <BackArrow onPress={() => navigation.replace("Folders")} />
 
         <Title>{folder?.title}</Title>
+
+        <View
+          style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
+        >
+          <Button
+            onPress={() => navigation.navigate("EditFolder", { folderId })}
+            style={{
+              paddingVertical: 12,
+              paddingHorizontal: 12,
+            }}
+            colorScheme="olive"
+          >
+            <PencilIcon size={16} color={theme.colors.floral.DEFAULT} />
+          </Button>
+          <Button
+            style={{
+              paddingVertical: 12,
+              paddingHorizontal: 12,
+              marginLeft: 8,
+            }}
+            colorScheme="olive"
+          >
+            <TrashIcon size={16} color={theme.colors.floral.DEFAULT} />
+          </Button>
+        </View>
       </View>
 
       {isLoading ? (

@@ -2,7 +2,7 @@ import Button from "@components/Button";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { TabList } from "src/Router";
 import IGroup from "src/types/IGroup";
@@ -14,8 +14,17 @@ interface SecondaryAddProps
   addGroup: (group: IGroup) => void;
 }
 
-const SecondaryAdd = ({ navigation, addGroup }: SecondaryAddProps) => {
-  const [selectedType, setSelectedType] = useState<"group" | "folder">("group");
+const SecondaryAdd = ({ navigation, addGroup, route }: SecondaryAddProps) => {
+  const routeType = route.params?.type;
+  const [selectedType, setSelectedType] = useState<"group" | "folder">(
+    routeType || "group"
+  );
+
+  useEffect(() => {
+    if (!routeType || routeType === selectedType) return;
+
+    setSelectedType(routeType);
+  }, [routeType]);
 
   return (
     <ScreenContainer withScroll>

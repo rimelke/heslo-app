@@ -35,7 +35,9 @@ export type TabList = {
   Home: undefined;
   FoldersRouter: NavigatorScreenParams<FoldersStackList>;
   Add: undefined;
-  SecondaryAdd: undefined;
+  SecondaryAdd: {
+    type?: "folder" | "group";
+  };
   ProfileRouter: NavigatorScreenParams<ProfileStackList>;
   Upgrade: undefined;
 };

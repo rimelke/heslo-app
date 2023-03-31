@@ -7,6 +7,7 @@ import {
 } from "react";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
+import EditFolder from "./EditFolder";
 import Entry from "./Entry";
 import Folder, { FolderRef } from "./Folder";
 import Folders from "./Folders";
@@ -15,6 +16,7 @@ export type FoldersStackList = {
   Folders: undefined;
   Folder: { folderId: string };
   Entry: { entry: IEntry; group?: IGroup };
+  EditFolder: { folderId: string };
 };
 
 const Stack = createNativeStackNavigator<FoldersStackList>();
@@ -74,6 +76,7 @@ const FoldersRouterWithRef: ForwardRefRenderFunction<FoldersRouterRef, {}> = (
           />
         )}
       </Stack.Screen>
+      <Stack.Screen name="EditFolder" component={EditFolder} />
     </Stack.Navigator>
   );
 };
