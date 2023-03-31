@@ -18,6 +18,7 @@ import { ProfileStackList } from ".";
 interface ChangePasswordData {
   oldPassword: string;
   newPassword: string;
+  repeatPassword: string;
 }
 
 interface ChangePasswordProps
@@ -37,7 +38,10 @@ const ChangePassword = ({
   const { setPassword } = useAuth();
 
   const handleSubmit = async (data: ChangePasswordData) => {
-    const wasSuccessful = await sendRequest(data);
+    const wasSuccessful = await sendRequest({
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    });
 
     if (!wasSuccessful) return;
 
@@ -52,7 +56,19 @@ const ChangePassword = ({
       oldPassword: z.string({ required_error: "Old password is required" }),
       newPassword: z
         .string({ required_error: "New password is required" })
-        .min(8),
+        .min(8, "New password must be at least 8 characters long")
+        .refine(
+          (value) => value !== formRef.current?.getFieldValue("oldPassword"),
+          "New password must be different from old password"
+        ),
+      repeatPassword: z
+        .string({
+          required_error: "Repeat new password is required",
+        })
+        .refine(
+          (value) => value === formRef.current?.getFieldValue("newPassword"),
+          "Passwords do not match"
+        ),
     }),
     handleSubmit
   );
@@ -69,11 +85,17 @@ const ChangePassword = ({
         <Input
           secureTextEntry
           style={{
-            marginTop: 16,
-            marginBottom: 24,
+            marginTop: 24,
+            marginBottom: 8,
           }}
           name="newPassword"
           label="New password"
+        />
+        <Input
+          name="repeatPassword"
+          secureTextEntry
+          label="Repeat new password"
+          style={{ marginBottom: 24 }}
         />
         {error && (
           <Text style={{ color: theme.colors.red[500], marginBottom: 24 }}>
