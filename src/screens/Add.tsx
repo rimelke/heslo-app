@@ -19,6 +19,7 @@ import theme from "src/theme";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabList } from "src/Router";
 import uploadFile from "@utils/uploadFile";
+import PremiumPlaceholder from "@components/PremiumPlaceholder";
 
 interface AddData {
   title: string;
@@ -34,9 +35,9 @@ interface AddProps extends BottomTabScreenProps<TabList, "Add"> {
 const Add = ({ navigation, addEntry }: AddProps) => {
   const formRef = useRef<FormHandles>(null);
   const [selectedType, setSelectedType] = useState<EntryType>("text");
-  const { password } = useAuth();
+  const { password, user } = useAuth();
   const { error, isLoading, sendRequest } = useRequest("/entries");
-  const { folders, updateFolder } = useFolders();
+  const { folders, updateFolder, totalEntries } = useFolders();
 
   const handleSubmit = async (data: AddData) => {
     if (!password || (!data.content && !data.file)) return;
@@ -95,60 +96,71 @@ const Add = ({ navigation, addEntry }: AddProps) => {
   return (
     <ScreenContainer withScroll>
       <Title>Add an entry</Title>
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 24,
-        }}
+      <PremiumPlaceholder
+        message="You can only add 20 entries in the free plan."
+        customCheck={totalEntries >= 20 && (!user || user.plan === "free")}
       >
-        <Button
-          onPress={() => setSelectedType("text")}
-          style={{ marginRight: 8, flex: 1 }}
-          colorScheme={selectedType === "text" ? "flame" : "floral-dark"}
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 24,
+          }}
         >
-          Text
-        </Button>
-        <Button
-          onPress={() => setSelectedType("file")}
-          style={{ marginLeft: 8, flex: 1 }}
-          colorScheme={selectedType === "file" ? "flame" : "floral-dark"}
-        >
-          File
-        </Button>
-      </View>
-      <Form ref={formRef} onSubmit={formHandler} style={{ marginTop: 16 }}>
-        <Input name="title" label="Title" style={{ marginBottom: 16 }} />
-        <Select
-          name="folderId"
-          label="Folder"
-          style={{ marginBottom: 16 }}
-          options={
-            folders?.map((folder) => ({
-              label: folder.title,
-              value: folder.id,
-            })) || []
+          <Button
+            onPress={() => setSelectedType("text")}
+            style={{ marginRight: 8, flex: 1 }}
+            colorScheme={selectedType === "text" ? "flame" : "floral-dark"}
+          >
+            Text
+          </Button>
+          <Button
+            onPress={() => setSelectedType("file")}
+            style={{ marginLeft: 8, flex: 1 }}
+            colorScheme={selectedType === "file" ? "flame" : "floral-dark"}
+          >
+            File
+          </Button>
+        </View>
+        <PremiumPlaceholder
+          customCheck={
+            selectedType === "file" && (!user || user.plan === "free")
           }
-        />
-        {selectedType === "text" ? (
-          <Input name="content" label="Content" multiline />
-        ) : (
-          <Upload name="file" />
-        )}
-
-        {error && (
-          <Text style={{ color: theme.colors.red[500], marginTop: 24 }}>
-            {error}
-          </Text>
-        )}
-
-        <Button
-          isLoading={isLoading}
-          onPress={() => formRef.current?.submitForm()}
-          style={{ marginTop: 24 }}
         >
-          Add
-        </Button>
-      </Form>
+          <Form ref={formRef} onSubmit={formHandler} style={{ marginTop: 16 }}>
+            <Input name="title" label="Title" style={{ marginBottom: 16 }} />
+            <Select
+              name="folderId"
+              label="Folder"
+              style={{ marginBottom: 16 }}
+              options={
+                folders?.map((folder) => ({
+                  label: folder.title,
+                  value: folder.id,
+                })) || []
+              }
+            />
+            {selectedType === "text" ? (
+              <Input name="content" label="Content" multiline />
+            ) : (
+              <Upload name="file" />
+            )}
+
+            {error && (
+              <Text style={{ color: theme.colors.red[500], marginTop: 24 }}>
+                {error}
+              </Text>
+            )}
+
+            <Button
+              isLoading={isLoading}
+              onPress={() => formRef.current?.submitForm()}
+              style={{ marginTop: 24 }}
+            >
+              Add
+            </Button>
+          </Form>
+        </PremiumPlaceholder>
+      </PremiumPlaceholder>
     </ScreenContainer>
   );
 };
