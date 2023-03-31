@@ -42,18 +42,39 @@ const Login = ({
   const { setPassword, setToken, setDefaultEmail, user, defaultEmail } =
     useAuth();
 
+  const getIsEnrolled = async (): Promise<boolean> => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    if (!hasHardware) return false;
+
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+    return isEnrolled;
+  };
+
+  const handleSavePassword = async (email: string, password: string) => {
+    try {
+      const isEnrolled = await getIsEnrolled();
+
+      if (!isEnrolled) return;
+
+      const saltedData = crypto
+        .createHash("sha256")
+        .update(`${salt}${email.trim().toLowerCase()}`)
+        .digest("base64");
+      const encryptedPassword = aes256.encrypt(saltedData, password);
+
+      await Keychain.setGenericPassword(email, encryptedPassword);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSubmit = async (data: ILoginData) => {
     const result = await sendRequest(data);
 
     if (!result) return;
 
-    const saltedData = crypto
-      .createHash("sha256")
-      .update(`${salt}${data.email.trim().toLowerCase()}`)
-      .digest("base64");
-    const encryptedPassword = aes256.encrypt(saltedData, data.password);
-
-    await Keychain.setGenericPassword(data.email, encryptedPassword);
+    await handleSavePassword(data.email, data.password);
     setDefaultEmail(data.email);
     setToken(result.token);
     setPassword(data.password);
@@ -70,10 +91,7 @@ const Login = ({
 
         if (!genericPassword || genericPassword.username !== email) return;
 
-        const hasHardware = await LocalAuthentication.hasHardwareAsync();
-        if (!hasHardware) return;
-
-        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        const isEnrolled = await getIsEnrolled();
         if (!isEnrolled) return;
 
         const result = await LocalAuthentication.authenticateAsync();
