@@ -8,12 +8,13 @@ import Title from "@components/Title";
 import Logo from "@components/Logo";
 import theme from "src/theme";
 import { Form } from "@unform/mobile";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FormHandles } from "@unform/core/typings/types";
 import useRequest from "@hooks/useRequest";
 import getFormHandler from "@utils/getFormHandler";
 import { z } from "zod";
 import { AuthStackList } from "src/Router";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const styles = StyleSheet.create({
   container: {
@@ -44,6 +45,27 @@ const Login = ({
     setToken(result.token);
     setPassword(data.password);
   };
+
+  useEffect(() => {
+    const checkForLocalAuth = async () => {
+      try {
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        if (!hasHardware) return;
+
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (!isEnrolled) return;
+
+        const result = await LocalAuthentication.authenticateAsync();
+        if (!result.success) return;
+
+        console.log("success", result);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkForLocalAuth();
+  }, []);
 
   const formHandler = getFormHandler<ILoginData>(
     formRef,
