@@ -14,7 +14,12 @@ interface Props extends TextInputProps {
   label?: string;
 }
 
-const InputWithRef: ForwardRefRenderFunction<TextInput, Props> = (
+export interface InputRef {
+  setValue: (value: string) => void;
+  getValue: () => string | undefined;
+}
+
+const InputWithRef: ForwardRefRenderFunction<InputRef, Props> = (
   { name, label, onChangeText = () => {}, style, ...rest },
   passedRef
 ) => {
@@ -24,17 +29,21 @@ const InputWithRef: ForwardRefRenderFunction<TextInput, Props> = (
   const inputRef = useRef<TextInput>(null);
   const valueRef = useRef(defaultValue || "");
 
+  const setValue = (value: string) => {
+    valueRef.current = value;
+
+    if (!inputRef.current) return;
+
+    inputRef.current.setNativeProps({ text: value });
+  };
+
+  const getValue = () => valueRef.current || undefined;
+
   useEffect(() => {
     registerField({
       name: fieldName,
-      getValue: () => valueRef.current || undefined,
-      setValue: (_, newValue) => {
-        valueRef.current = newValue;
-
-        if (!inputRef.current) return;
-
-        inputRef.current.setNativeProps({ text: newValue });
-      },
+      getValue,
+      setValue: (_, newValue: string) => setValue(newValue),
       clearValue: () => {
         valueRef.current = "";
 
@@ -45,7 +54,14 @@ const InputWithRef: ForwardRefRenderFunction<TextInput, Props> = (
     });
   }, [fieldName, registerField]);
 
-  useImperativeHandle(passedRef, () => inputRef.current as TextInput, []);
+  useImperativeHandle(
+    passedRef,
+    () => ({
+      setValue,
+      getValue,
+    }),
+    []
+  );
 
   return (
     <View style={style}>

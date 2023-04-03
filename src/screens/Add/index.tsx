@@ -80,16 +80,29 @@ const Add = ({ navigation, addEntry }: AddProps) => {
   const formHandler = getFormHandler<AddData>(
     formRef,
     z.object({
-      title: z.string(),
-      folderId: z.string(),
-      content: z.string().optional(),
+      title: z.string({
+        required_error: "Title is required",
+      }),
+      content: z
+        .string({
+          required_error: "Content is required",
+        })
+        .optional()
+        .refine((value) => (selectedType === "text" ? !!value : true), {
+          message: "Content is required",
+        }),
       file: z
         .object({
           name: z.string(),
           type: z.string(),
           uri: z.string(),
         })
-        .optional(),
+        .optional()
+        .refine((value) => (selectedType === "file" ? !!value : true), {
+          message: "File is required",
+        }),
+
+      folderId: z.string(),
     }),
     handleSubmit
   );

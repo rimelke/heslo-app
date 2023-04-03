@@ -2,7 +2,7 @@
   "expo": {
     "name": "Heslo",
     "slug": "heslo",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "scheme": "hesloio",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,6 +35,10 @@
             {
               "scheme": "https",
               "host": "app.heslo.io"
+            },
+            {
+              "scheme": "https",
+              "host": "qa-app.heslo.io"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

@@ -1,5 +1,5 @@
 import Button from "@components/Button";
-import Input from "@components/form/Input";
+import Input, { InputRef } from "@components/form/Input";
 import getStrongPassword from "@utils/getStrongPassword";
 import { useRef } from "react";
 import { TextInput as NativeTextInput, View } from "react-native";
@@ -8,29 +8,30 @@ import theme from "src/theme";
 import * as Clipboard from "expo-clipboard";
 
 const TextInput = () => {
-  const inputRef = useRef<NativeTextInput>(null);
-  const valueRef = useRef<string>("");
+  const inputRef = useRef<InputRef>(null);
 
   const handleGenerate = () => {
     if (!inputRef.current) return;
 
     const strongPassword = getStrongPassword();
 
-    inputRef.current.setNativeProps({ text: strongPassword });
-    valueRef.current = strongPassword;
+    inputRef.current.setValue(strongPassword);
   };
 
   const handleCopy = () => {
-    if (!valueRef.current) return;
+    if (!inputRef.current) return;
 
-    Clipboard.setStringAsync(valueRef.current);
+    const value = inputRef.current.getValue();
+
+    if (!value) return;
+
+    Clipboard.setStringAsync(value);
   };
 
   return (
     <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
       <Input
         ref={inputRef}
-        onChangeText={(value) => (valueRef.current = value)}
         name="content"
         label="Content"
         multiline

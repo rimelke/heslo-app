@@ -12,7 +12,12 @@ SplashScreen.preventAutoHideAsync();
 const App = () => (
   <NavigationContainer
     linking={{
-      prefixes: ["hesloio://", "https://app.heslo.io/", "io.heslo.app://"],
+      prefixes: [
+        "hesloio://",
+        "https://app.heslo.io/",
+        "https://qa-app.heslo.io/",
+        "io.heslo.app://",
+      ],
       config: {
         screens: {
           Signup: { path: "signup" },

@@ -12,7 +12,15 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "app-bundle",
+        "image": "latest"
+      },
+      "env": {
+        "FILES_CDN_URL": "https://qa-files.heslo.io",
+        "API_URL": "https://qa-app.heslo.io/api"
+      }
     },
     "production": {
       "env": {
