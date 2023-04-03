@@ -4,6 +4,7 @@ import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { parse } from "expo-linking";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,7 +25,8 @@ const Plan = ({
 
     if (url.includes("result=success")) {
       setUser((oldUser) => oldUser && { ...oldUser, plan: "premium" });
-      const email = new URL(url).searchParams.get("email");
+      const rawEmail = parse(url).queryParams?.email;
+      const email = typeof rawEmail === "string" ? rawEmail : undefined;
       navigation.navigate("Login", { defaultEmail: email || defaultEmail });
     }
 
