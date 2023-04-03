@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "expo start --dev-client",
     "build:dev": "eas build --profile development --platform android",
+    "build:preview": "eas build --profile preview --platform android",
     "build:android": "eas build --profile production --platform android",
     "build:ios": "eas build --profile production --platform ios",
     "start": "expo start --dev-client",
