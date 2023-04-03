@@ -27,6 +27,7 @@
         "backgroundColor": "#FFFCF2"
       },
       "package": "io.heslo.app",
+      "versionCode": 4,
       "intentFilters": [
         {
           "action": "VIEW",
