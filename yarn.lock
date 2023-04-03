@@ -6031,6 +6031,11 @@ react-native-codegen@^0.70.6:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-email-link@^1.14.5:
+  version "1.14.5"
+  resolved "https://registry.yarnpkg.com/react-native-email-link/-/react-native-email-link-1.14.5.tgz#05e13002bd850ebaf98477b4cfbfdfa972a57608"
+  integrity sha512-TNi9OeGcJlw6FXl1dWAKEBGJEgKPBfsiB3v8GaHqqCtzmWnKE+8y1Wfhaaloh37OJb2vqp1cwDpW5m6PiTXazA==
+
 react-native-gradle-plugin@^0.70.3:
   version "0.70.3"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"

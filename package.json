@@ -33,6 +33,7 @@
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-email-link": "^1.14.5",
     "react-native-heroicons": "^3.2.0",
     "react-native-keychain": "^8.1.1",
     "react-native-quick-crypto": "^0.5.0",

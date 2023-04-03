@@ -4,10 +4,11 @@ import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { InboxIcon } from "react-native-heroicons/solid";
 import { AuthStackList } from "src/Router";
 import theme from "src/theme";
+import { openInbox } from "react-native-email-link";
 
 const Success = ({
   navigation,
@@ -16,7 +17,14 @@ const Success = ({
 
   return (
     <ScreenContainer withScroll>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <View style={{ alignSelf: "stretch", height: 60, marginBottom: 48 }}>
           <Logo />
         </View>
@@ -27,7 +35,7 @@ const Success = ({
             style={{ marginRight: 16 }}
             color={theme.colors.flame.DEFAULT}
           />
-          <Title>Congratulations!</Title>
+          <Title>Check your inbox!</Title>
         </View>
 
         <Text
@@ -41,11 +49,29 @@ const Success = ({
           inbox.
         </Text>
         <Button
-          style={{ marginTop: 36, paddingHorizontal: 64 }}
+          style={{ marginTop: 48, paddingHorizontal: 64 }}
+          onPress={() => openInbox()}
+        >
+          Open email app
+        </Button>
+
+        <Text style={{ marginTop: 18, color: theme.colors.floral.dark }}>
+          or
+        </Text>
+
+        <TouchableOpacity
           onPress={() => navigation.navigate("Login", { defaultEmail })}
         >
-          Go to login
-        </Button>
+          <Text
+            style={{
+              marginTop: 18,
+              color: theme.colors.flame.DEFAULT,
+              textDecorationLine: "underline",
+            }}
+          >
+            Go to login
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScreenContainer>
   );
