@@ -59,12 +59,34 @@ const FolderWithRef: ForwardRefRenderFunction<
 
   const updateEntry = (id: string, entry: IEntry) => {
     setData((oldData) =>
-      oldData?.map((item) => (item.id === id ? entry : item))
+      oldData?.map((item) =>
+        item.id === id
+          ? entry
+          : "entries" in item
+          ? {
+              ...item,
+              entries: item.entries.map((entry) =>
+                entry.id === id ? entry : entry
+              ),
+            }
+          : item
+      )
     );
   };
 
   const deleteEntry = (id: string) => {
-    setData((oldData) => oldData?.filter((item) => item.id !== id));
+    setData((oldData) =>
+      oldData
+        ?.filter((item) => item.id !== id)
+        .map((item) =>
+          "entries" in item
+            ? {
+                ...item,
+                entries: item.entries.filter((entry) => entry.id !== id),
+              }
+            : item
+        )
+    );
   };
 
   const updateEntriesPassword = (oldPassword: string, newPassword: string) => {

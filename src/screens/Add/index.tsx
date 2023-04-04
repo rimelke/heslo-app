@@ -102,7 +102,9 @@ const Add = ({ navigation, addEntry }: AddProps) => {
           message: "File is required",
         }),
 
-      folderId: z.string(),
+      folderId: z.string({
+        required_error: "Folder is required",
+      }),
     }),
     handleSubmit
   );

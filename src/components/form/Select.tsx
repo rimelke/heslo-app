@@ -11,8 +11,8 @@ interface SelectProps extends ViewProps {
 }
 
 const Select = ({ options, style, label, name }: SelectProps) => {
-  const [value, setValue] = useState(options[0].value);
-  const valueRef = useRef(options[0].value);
+  const [value, setValue] = useState(options[0]?.value);
+  const valueRef = useRef(options[0]?.value);
   const { clearError, error, fieldName, registerField } = useField(name);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Select = ({ options, style, label, name }: SelectProps) => {
       <View
         style={{
           borderWidth: 1,
-          borderColor: theme.colors.floral.dark,
+          borderColor: error ? theme.colors.red[500] : theme.colors.floral.dark,
           borderRadius: 8,
         }}
       >
