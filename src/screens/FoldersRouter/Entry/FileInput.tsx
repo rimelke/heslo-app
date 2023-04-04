@@ -1,3 +1,4 @@
+import HiddenInput from "@components/form/HiddenInput";
 import * as Linking from "expo-linking";
 import { View, Text, TouchableOpacity } from "react-native";
 import { ArrowTopRightOnSquareIcon } from "react-native-heroicons/solid";
@@ -20,6 +21,8 @@ const FileInput = ({ url }: FileInputProps) => {
         marginTop: 24,
       }}
     >
+      <HiddenInput name="content" value={url} />
+
       <TouchableOpacity onPress={() => Linking.openURL(url)}>
         <Text
           style={{
