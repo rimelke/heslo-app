@@ -4,7 +4,7 @@ import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import IEntry, { EntryType } from "src/types/IEntry";
 import Upload, { FileType } from "@components/form/Upload";
@@ -21,6 +21,9 @@ import { TabList } from "src/Router";
 import uploadFile from "@utils/uploadFile";
 import PremiumPlaceholder from "@components/PremiumPlaceholder";
 import TextInput from "./TextInput";
+import useGet from "@hooks/useGet";
+import IGroup from "src/types/IGroup";
+import Loading from "@components/Loading";
 
 interface AddData {
   title: string;
@@ -33,12 +36,40 @@ interface AddProps extends BottomTabScreenProps<TabList, "Add"> {
   addEntry: (entry: IEntry) => void;
 }
 
-const Add = ({ navigation, addEntry }: AddProps) => {
+const Add = ({
+  navigation,
+  addEntry,
+  route: { params: { folderId, groupId } = {} },
+}: AddProps) => {
   const formRef = useRef<FormHandles>(null);
   const [selectedType, setSelectedType] = useState<EntryType>("text");
+  const { folders = [], updateFolder, totalEntries } = useFolders();
+
+  const [selectedFolderId, setSelectedFolderId] = useState(
+    folderId || folders[0]?.id
+  );
+  const { data: entries } = useGet<(IEntry | IGroup)[]>(
+    `/folders/${selectedFolderId}/entries`,
+    [selectedFolderId]
+  );
+
   const { password, user } = useAuth();
   const { error, isLoading, sendRequest } = useRequest("/entries");
-  const { folders, updateFolder, totalEntries } = useFolders();
+
+  useEffect(() => {
+    const newFolderId = folderId || folders[0]?.id;
+
+    setSelectedFolderId(newFolderId);
+
+    if (!formRef.current) return;
+
+    formRef.current.setFieldValue("folderId", newFolderId);
+    formRef.current.setFieldValue("groupId", groupId);
+  }, [folderId, groupId]);
+
+  const groups = entries?.filter((entry) => "entries" in entry) as
+    | IGroup[]
+    | undefined;
 
   const handleSubmit = async (data: AddData) => {
     if (!password || (!data.content && !data.file)) return;
@@ -91,6 +122,7 @@ const Add = ({ navigation, addEntry }: AddProps) => {
         .refine((value) => (selectedType === "text" ? !!value : true), {
           message: "Content is required",
         }),
+      groupId: z.string().optional(),
       file: z
         .object({
           name: z.string(),
@@ -142,19 +174,44 @@ const Add = ({ navigation, addEntry }: AddProps) => {
             selectedType === "file" && (!user || user.plan === "free")
           }
         >
-          <Form ref={formRef} onSubmit={formHandler} style={{ marginTop: 16 }}>
+          <Form
+            ref={formRef}
+            onSubmit={formHandler}
+            style={{ marginTop: 16 }}
+            initialData={{
+              folderId: selectedFolderId,
+              groupId,
+            }}
+          >
             <Input name="title" label="Title" style={{ marginBottom: 16 }} />
             <Select
               name="folderId"
               label="Folder"
               style={{ marginBottom: 16 }}
-              options={
-                folders?.map((folder) => ({
-                  label: folder.title,
-                  value: folder.id,
-                })) || []
-              }
+              onValueChange={(value) => setSelectedFolderId(value)}
+              options={folders.map((folder) => ({
+                label: folder.title,
+                value: folder.id,
+              }))}
             />
+
+            {groups ? (
+              groups.length > 0 && (
+                <Select
+                  name="groupId"
+                  label="Group"
+                  placeholder="Select a group"
+                  style={{ marginBottom: 16 }}
+                  options={groups.map((group) => ({
+                    label: group.title,
+                    value: group.id,
+                  }))}
+                />
+              )
+            ) : (
+              <Loading />
+            )}
+
             {selectedType === "text" ? <TextInput /> : <Upload name="file" />}
 
             {error && (

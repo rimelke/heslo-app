@@ -34,7 +34,10 @@ import IGroup from "./types/IGroup";
 export type TabList = {
   Home: undefined;
   FoldersRouter: NavigatorScreenParams<FoldersStackList>;
-  Add: undefined;
+  Add: {
+    folderId?: string;
+    groupId?: string;
+  };
   SecondaryAdd: {
     type?: "folder" | "group";
   };

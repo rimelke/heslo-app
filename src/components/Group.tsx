@@ -1,9 +1,13 @@
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FoldersStackList } from "@screens/FoldersRouter";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { ChevronRightIcon } from "react-native-heroicons/solid";
+import { ChevronRightIcon, PlusIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
+import Button from "./Button";
 import Entry from "./Entry";
 
 interface GroupProps {
@@ -12,6 +16,10 @@ interface GroupProps {
 }
 
 const Group = ({ group, openEntry }: GroupProps) => {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<FoldersStackList, "Folder", "tabs">
+    >();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -51,6 +59,25 @@ const Group = ({ group, openEntry }: GroupProps) => {
         {group.entries.map((entry) => (
           <Entry openEntry={openEntry} entry={entry} key={entry.id} />
         ))}
+
+        <Button
+          onPress={() =>
+            navigation.getParent("tabs")?.navigate("Add", {
+              folderId: group.folderId,
+              groupId: group.id,
+            })
+          }
+          colorScheme="floral"
+          style={{
+            borderColor: theme.colors.floral.dark,
+            borderWidth: 1,
+            borderStyle: "dashed",
+            paddingVertical: 12,
+            marginBottom: 16,
+          }}
+        >
+          <PlusIcon size={28} color={theme.colors.olive.dark} />
+        </Button>
       </View>
     </TouchableOpacity>
   );

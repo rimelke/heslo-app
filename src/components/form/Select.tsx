@@ -8,12 +8,25 @@ interface SelectProps extends ViewProps {
   name: string;
   label?: string;
   options: { label: string; value: string }[];
+  onValueChange?: (value: string) => void;
+  placeholder?: string;
 }
 
-const Select = ({ options, style, label, name }: SelectProps) => {
-  const [value, setValue] = useState(options[0]?.value);
-  const valueRef = useRef(options[0]?.value);
-  const { clearError, error, fieldName, registerField } = useField(name);
+const Select = ({
+  options,
+  style,
+  label,
+  name,
+  onValueChange,
+  placeholder,
+}: SelectProps) => {
+  const { clearError, error, fieldName, registerField, defaultValue } =
+    useField(name);
+
+  const [value, setValue] = useState(
+    defaultValue || (placeholder ? undefined : options[0]?.value)
+  );
+  const valueRef = useRef(value);
 
   useEffect(() => {
     registerField({
@@ -51,12 +64,22 @@ const Select = ({ options, style, label, name }: SelectProps) => {
           onValueChange={(newValue) => {
             setValue(newValue);
             valueRef.current = newValue;
+            onValueChange?.(newValue);
           }}
           style={{
             color: theme.colors.olive.DEFAULT,
             height: 46,
           }}
         >
+          {placeholder && (
+            <Picker.Item
+              style={{
+                fontSize: 14,
+              }}
+              label={placeholder}
+            />
+          )}
+
           {options.map((option) => (
             <Picker.Item
               style={{

@@ -181,7 +181,9 @@ const FolderWithRef: ForwardRefRenderFunction<
           keyExtractor={(item) => item.id}
           ListFooterComponent={
             <Button
-              onPress={() => navigation.getParent("tabs")?.navigate("Add")}
+              onPress={() =>
+                navigation.getParent("tabs")?.navigate("Add", { folderId })
+              }
               colorScheme="floral"
               style={{
                 borderColor: theme.colors.floral.dark,
@@ -214,7 +216,9 @@ const FolderWithRef: ForwardRefRenderFunction<
             No entries found
           </Text>
           <Button
-            onPress={() => navigation.getParent("tabs")?.navigate("Add")}
+            onPress={() =>
+              navigation.getParent("tabs")?.navigate("Add", { folderId })
+            }
             colorScheme="olive"
             style={{ marginTop: 28, paddingHorizontal: 32 }}
           >
