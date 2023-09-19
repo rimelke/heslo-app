@@ -16,3 +16,4 @@ yarn-error.log
 .env
 android
 build-*.apk
+ios

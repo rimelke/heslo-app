@@ -8,7 +8,11 @@
     "icon": "./assets/icon.png",
     "entryPoint": "./src/App.tsx",
     "userInterfaceStyle": "light",
-    "plugins": ["./plugin.js", "react-native-email-link"],
+    "plugins": [
+      "./plugin.js",
+      "react-native-email-link",
+      "react-native-webassembly"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,7 +21,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "io.heslo.app"
@@ -43,7 +49,10 @@
               "host": "qa-app.heslo.io"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

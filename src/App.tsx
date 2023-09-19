@@ -1,11 +1,11 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { registerRootComponent } from "expo";
-import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
-import { AuthProvider } from "./contexts/AuthContext";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Router from "./Router";
-import { StatusBar } from "expo-status-bar";
+import { AuthProvider } from "./contexts/AuthContext";
+import theme from "./theme";
 
 SplashScreen.preventAutoHideAsync();
 

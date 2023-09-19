@@ -1,23 +1,25 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View, StyleSheet, Text } from "react-native";
-import { useAuth } from "@contexts/AuthContext";
-import ScreenContainer from "@components/ScreenContainer";
-import Input from "@components/form/Input";
 import Button from "@components/Button";
-import Title from "@components/Title";
 import Logo from "@components/Logo";
-import theme from "src/theme";
-import { Form } from "@unform/mobile";
-import { useEffect, useRef } from "react";
+import ScreenContainer from "@components/ScreenContainer";
+import Title from "@components/Title";
+import Input from "@components/form/Input";
+import { useAuth } from "@contexts/AuthContext";
+import useAsync from "@hooks/useAsync";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import api from "@services/api";
 import { FormHandles } from "@unform/core/typings/types";
-import useRequest from "@hooks/useRequest";
-import getFormHandler from "@utils/getFormHandler";
-import { z } from "zod";
-import { AuthStackList } from "src/Router";
-import * as LocalAuthentication from "expo-local-authentication";
-import * as Keychain from "react-native-keychain";
-import crypto from "react-native-quick-crypto";
+import { Form } from "@unform/mobile";
 import aes256 from "@utils/aes256";
+import getFormHandler from "@utils/getFormHandler";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useEffect, useRef } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import * as Keychain from "react-native-keychain";
+import * as opaque from "react-native-opaque";
+import crypto from "react-native-quick-crypto";
+import { AuthStackList } from "src/Router";
+import theme from "src/theme";
+import { z } from "zod";
 
 const styles = StyleSheet.create({
   container: {
@@ -38,9 +40,8 @@ const Login = ({
   navigation,
 }: NativeStackScreenProps<AuthStackList, "Login">) => {
   const formRef = useRef<FormHandles>(null);
-  const { error, isLoading, sendRequest } = useRequest("/users/login");
-  const { setPassword, setToken, setDefaultEmail, user, defaultEmail } =
-    useAuth();
+  const { isLoading, adapt, error, setError } = useAsync();
+  const { setPassword, setDefaultEmail, user, defaultEmail } = useAuth();
 
   const getIsEnrolled = async (): Promise<boolean> => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -69,16 +70,48 @@ const Login = ({
     }
   };
 
-  const handleSubmit = async (data: ILoginData) => {
-    const result = await sendRequest(data);
+  const handleSubmit = adapt(async ({ email, password }: ILoginData) => {
+    const { clientLoginState, startLoginRequest: loginRequest } =
+      opaque.client.startLogin({ password });
 
-    if (!result) return;
+    const { data } = await api.post("/auth/login/request", {
+      loginRequest,
+      email,
+    });
 
-    await handleSavePassword(data.email, data.password);
-    setDefaultEmail(data.email);
-    setToken(result.token);
-    setPassword(data.password);
-  };
+    const { nonce, loginResponse } = data;
+
+    const loginRecord = opaque.client.finishLogin({
+      clientLoginState,
+      loginResponse,
+      password,
+    });
+
+    console.log({
+      password,
+      loginRequest,
+      loginRecord,
+      loginResponse,
+      nonce,
+      email,
+      clientLoginState,
+    });
+
+    if (!loginRecord) {
+      setError("Invalid password or email");
+
+      return;
+    }
+
+    await api.post("/auth/login/record", {
+      nonce,
+      loginRecord: loginRecord.finishLoginRequest,
+    });
+
+    await handleSavePassword(email, password);
+    setDefaultEmail(email);
+    setPassword(password);
+  });
 
   useEffect(() => {
     const checkForLocalAuth = async () => {
