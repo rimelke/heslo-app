@@ -20,7 +20,6 @@ import {
   ArchiveBoxIcon,
   PencilIcon,
   PlusIcon,
-  TrashIcon,
 } from "react-native-heroicons/solid";
 import theme from "src/theme";
 import IEntry from "src/types/IEntry";
@@ -96,6 +95,19 @@ const FolderWithRef: ForwardRefRenderFunction<
         newPassword,
         aes256.decrypt(oldPassword, entry.content)
       ),
+      userName: entry.userName
+        ? aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, entry.userName)
+          )
+        : null,
+      title: aes256.encrypt(
+        newPassword,
+        aes256.decrypt(oldPassword, entry.title)
+      ),
+      url: entry.url
+        ? aes256.encrypt(newPassword, aes256.decrypt(oldPassword, entry.url))
+        : null,
     });
 
     setData((oldData) =>

@@ -1,17 +1,23 @@
 import BackArrow from "@components/BackArrow";
 import Button from "@components/Button";
-import Input from "@components/form/Input";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
+import Input from "@components/form/Input";
 import { useAuth } from "@contexts/AuthContext";
-import useRequest from "@hooks/useRequest";
+import { IFolder, useFolders } from "@contexts/FoldersContext";
+import useAsync from "@hooks/useAsync";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import api from "@services/api";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
+import aes256 from "@utils/aes256";
 import getFormHandler from "@utils/getFormHandler";
 import { useRef } from "react";
 import { Text, View } from "react-native";
+import * as opaque from "react-native-opaque";
 import theme from "src/theme";
+import IEntry from "src/types/IEntry";
+import IGroup from "src/types/IGroup";
 import { z } from "zod";
 import { ProfileStackList } from ".";
 
@@ -31,24 +37,100 @@ const ChangePassword = ({
   onChangePassword,
 }: ChangePasswordProps) => {
   const formRef = useRef<FormHandles>(null);
-  const { error, isLoading, sendRequest } = useRequest(
-    "/users/password",
-    "patch"
-  );
+  const { folders } = useFolders();
+  const { isLoading, adapt, error, setError } = useAsync();
   const { setPassword } = useAuth();
 
-  const handleSubmit = async (data: ChangePasswordData) => {
-    const wasSuccessful = await sendRequest({
-      oldPassword: data.oldPassword,
-      newPassword: data.newPassword,
-    });
+  const handleSubmit = adapt(
+    async ({ newPassword, oldPassword }: ChangePasswordData) => {
+      let usedFolders: IFolder[] | undefined = folders;
+      if (!usedFolders) {
+        const { data: newFolders } = await api.get<IFolder[]>("/folders");
 
-    if (!wasSuccessful) return;
+        usedFolders = newFolders;
+      }
 
-    setPassword(data.newPassword);
-    onChangePassword(data.oldPassword, data.newPassword);
-    navigation.navigate("Profile");
-  };
+      const entries = (
+        await Promise.all(
+          usedFolders.map(async (folder) => {
+            const { data } = await api.get<(IEntry | IGroup)[]>(
+              `/folders/${folder.id}/entries`
+            );
+
+            return data.reduce<IEntry[]>(
+              (acc, item) => [
+                ...acc,
+                ...("entries" in item ? item.entries : [item]),
+              ],
+              []
+            );
+          })
+        )
+      ).flat();
+
+      const { clientLoginState, startLoginRequest: loginRequest } =
+        opaque.client.startLogin({ password: oldPassword });
+      const { clientRegistrationState, registrationRequest } =
+        opaque.client.startRegistration({ password: newPassword });
+
+      const {
+        data: { loginResponse, registrationResponse, nonce },
+      } = await api.post("/auth/password/request", {
+        loginRequest,
+        registrationRequest,
+      });
+
+      const { registrationRecord } = opaque.client.finishRegistration({
+        clientRegistrationState,
+        password: newPassword,
+        registrationResponse,
+      });
+      const loginResult = opaque.client.finishLogin({
+        clientLoginState,
+        loginResponse,
+        password: oldPassword,
+      });
+
+      if (!loginResult) {
+        setError("Invalid old password");
+
+        return;
+      }
+
+      await api.post("/auth/password/record", {
+        nonce,
+        loginRecord: loginResult.finishLoginRequest,
+        registrationRecord,
+        entries: entries.map((entry) => ({
+          id: entry.id,
+          title: aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, entry.title)
+          ),
+          content: aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, entry.content)
+          ),
+          userName: entry.userName
+            ? aes256.encrypt(
+                newPassword,
+                aes256.decrypt(oldPassword, entry.userName)
+              )
+            : null,
+          url: entry.url
+            ? aes256.encrypt(
+                newPassword,
+                aes256.decrypt(oldPassword, entry.url)
+              )
+            : null,
+        })),
+      });
+
+      setPassword(newPassword);
+      onChangePassword(oldPassword, newPassword);
+      navigation.navigate("Profile");
+    }
+  );
 
   const formHandler = getFormHandler<ChangePasswordData>(
     formRef,

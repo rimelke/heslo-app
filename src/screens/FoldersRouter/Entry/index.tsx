@@ -1,23 +1,19 @@
 import BackArrow from "@components/BackArrow";
-import Input from "@components/form/Input";
+import Button from "@components/Button";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Form } from "@unform/mobile";
-import { Text, TouchableOpacity, View } from "react-native";
-import { FoldersStackList } from "..";
-import aes256 from "@utils/aes256";
+import Input from "@components/form/Input";
 import { useAuth } from "@contexts/AuthContext";
-import Button from "@components/Button";
-import { useRef, useState } from "react";
-import { FormHandles } from "@unform/core";
-import getFormHandler from "@utils/getFormHandler";
-import { z } from "zod";
+import { useFolders } from "@contexts/FoldersContext";
 import useRequest from "@hooks/useRequest";
-import theme from "src/theme";
-import IEntry from "src/types/IEntry";
-import TextInput from "./TextInput";
-import FileInput from "./FileInput";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { FormHandles } from "@unform/core";
+import { Form } from "@unform/mobile";
+import aes256 from "@utils/aes256";
+import getFormHandler from "@utils/getFormHandler";
+import * as Clipboard from "expo-clipboard";
+import { useRef } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import {
   ChevronRightIcon,
   ClipboardIcon,
@@ -26,9 +22,13 @@ import {
   LockClosedIcon,
   RectangleGroupIcon,
 } from "react-native-heroicons/solid";
-import * as Clipboard from "expo-clipboard";
+import theme from "src/theme";
+import IEntry from "src/types/IEntry";
+import { z } from "zod";
+import { FoldersStackList } from "..";
 import DeleteEntry from "./DeleteEntry";
-import { useFolders } from "@contexts/FoldersContext";
+import FileInput from "./FileInput";
+import TextInput from "./TextInput";
 
 interface EntryData {
   title: string;
@@ -42,7 +42,7 @@ type Props = NativeStackScreenProps<FoldersStackList, "Entry"> & {
 
 const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
   const { entry, group } = route.params;
-  const { password } = useAuth();
+  const { password = "" } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest(
     `/entries/${entry.id}`,
@@ -55,11 +55,11 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
   const handleSubmit = async (data: EntryData) => {
     if (!password) return;
 
-    const encryptedContent = aes256.encrypt(password, data.content);
-
     const result = await sendRequest({
-      title: data.title,
-      content: encryptedContent,
+      userName: entry.userName,
+      url: entry.url,
+      title: aes256.encrypt(password, data.title),
+      content: aes256.encrypt(password, data.content),
     });
 
     if (!result) return;
@@ -80,6 +80,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
   const initialData = {
     ...entry,
     content: aes256.decrypt(password || "", entry.content),
+    title: aes256.decrypt(password || "", entry.title),
   };
 
   return (
@@ -87,7 +88,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <BackArrow onPress={navigation.goBack} />
 
-        <Title>{entry.title}</Title>
+        <Title>{aes256.decrypt(password, entry.title)}</Title>
       </View>
       <View
         style={{

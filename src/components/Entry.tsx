@@ -1,4 +1,6 @@
+import { useAuth } from "@contexts/AuthContext";
 import addLastId from "@utils/addLastId";
+import aes256 from "@utils/aes256";
 import { Text, TouchableOpacity } from "react-native";
 import { DocumentIcon, LockClosedIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
@@ -10,6 +12,8 @@ interface EntryProps {
 }
 
 const Entry = ({ entry, openEntry }: EntryProps) => {
+  const { password = "" } = useAuth();
+
   const Icon = entry.type === "text" ? LockClosedIcon : DocumentIcon;
 
   return (
@@ -35,7 +39,7 @@ const Entry = ({ entry, openEntry }: EntryProps) => {
           fontSize: 16,
         }}
       >
-        {entry.title}
+        {aes256.decrypt(password, entry.title)}
       </Text>
     </TouchableOpacity>
   );

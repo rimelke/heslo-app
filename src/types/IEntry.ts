@@ -10,6 +10,8 @@ interface IEntry {
   content: string;
   createdAt: string;
   updatedAt: string;
+  userName?: string | null;
+  url?: string | null;
 }
 
 export default IEntry;

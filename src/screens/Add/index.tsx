@@ -1,29 +1,29 @@
 import Button from "@components/Button";
-import Input from "@components/form/Input";
+import Loading from "@components/Loading";
+import PremiumPlaceholder from "@components/PremiumPlaceholder";
 import ScreenContainer from "@components/ScreenContainer";
 import Title from "@components/Title";
+import Input from "@components/form/Input";
+import Select from "@components/form/Select";
+import Upload, { FileType } from "@components/form/Upload";
+import { useAuth } from "@contexts/AuthContext";
+import { useFolders } from "@contexts/FoldersContext";
+import useGet from "@hooks/useGet";
+import useRequest from "@hooks/useRequest";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
+import aes256 from "@utils/aes256";
+import getFormHandler from "@utils/getFormHandler";
+import uploadFile from "@utils/uploadFile";
 import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
-import IEntry, { EntryType } from "src/types/IEntry";
-import Upload, { FileType } from "@components/form/Upload";
-import getFormHandler from "@utils/getFormHandler";
-import { z } from "zod";
-import { useAuth } from "@contexts/AuthContext";
-import aes256 from "@utils/aes256";
-import useRequest from "@hooks/useRequest";
-import Select from "@components/form/Select";
-import { useFolders } from "@contexts/FoldersContext";
-import theme from "src/theme";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabList } from "src/Router";
-import uploadFile from "@utils/uploadFile";
-import PremiumPlaceholder from "@components/PremiumPlaceholder";
-import TextInput from "./TextInput";
-import useGet from "@hooks/useGet";
+import theme from "src/theme";
+import IEntry, { EntryType } from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
-import Loading from "@components/Loading";
+import { z } from "zod";
+import TextInput from "./TextInput";
 
 interface AddData {
   title: string;
@@ -77,6 +77,7 @@ const Add = ({
     const result = await sendRequest(
       {
         ...data,
+        shouldAutoload: false,
         type: selectedType,
       },
       {
