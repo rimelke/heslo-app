@@ -1,18 +1,18 @@
-import ScreenContainer from "@components/ScreenContainer";
-import Title from "@components/Title";
-import { useState } from "react";
 import FreeCard from "@components/FreeCard";
 import PremiumCard from "@components/PremiumCard";
-import { WebView } from "react-native-webview";
+import ScreenContainer from "@components/ScreenContainer";
+import Title from "@components/Title";
 import { useAuth } from "@contexts/AuthContext";
-import theme from "src/theme";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
 import { TabList } from "src/Router";
+import theme from "src/theme";
 
 const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const { token, setUser, refreshToken } = useAuth();
+  const { setUser } = useAuth();
 
   const handleCheckoutChange = (url: string): boolean => {
     if (!url.includes("result=")) return true;
@@ -22,7 +22,6 @@ const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
     if (url.includes("result=success")) {
       setUser((oldUser) => oldUser && { ...oldUser, plan: "premium" });
       navigation.navigate("ProfileRouter", { screen: "Profile" });
-      refreshToken();
     }
 
     return false;
@@ -39,9 +38,6 @@ const Upgrade = ({ navigation }: BottomTabScreenProps<TabList, "Upgrade">) => {
             uri: `${
               process.env.API_URL || "http://10.0.2.2:3000/api"
             }/payments/checkout`,
-            headers: {
-              Cookie: `heslo.token=${token}`,
-            },
           }}
           style={{ backgroundColor: theme.colors.floral.DEFAULT }}
           startInLoadingState

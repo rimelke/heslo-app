@@ -15,7 +15,7 @@ import theme from "src/theme";
 const Plan = ({
   navigation,
 }: NativeStackScreenProps<AuthStackList, "Plan">) => {
-  const { defaultEmail, setUser, token } = useAuth();
+  const { defaultEmail, setUser } = useAuth();
   const [isPremiumOpen, setIsPremiumOpen] = useState(false);
 
   const handleCheckoutChange = (url: string): boolean => {
@@ -44,9 +44,6 @@ const Plan = ({
             uri: `${
               process.env.API_URL || "http://10.0.2.2:3000/api"
             }/payments/checkout`,
-            headers: {
-              Cookie: `heslo.token=${token}`,
-            },
           }}
           style={{ backgroundColor: theme.colors.floral.DEFAULT }}
           startInLoadingState

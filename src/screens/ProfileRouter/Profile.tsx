@@ -15,7 +15,7 @@ import { ProfileStackList } from ".";
 const Profile = ({
   navigation,
 }: NativeStackScreenProps<ProfileStackList, "Profile">) => {
-  const { user, logout, token } = useAuth();
+  const { user, logout } = useAuth();
   const { folders } = useFolders();
   const [isPaymentsOpen, setIsPaymentsOpen] = useState(false);
 
@@ -40,9 +40,6 @@ const Profile = ({
             uri: `${
               process.env.API_URL || "http://10.0.2.2:3000/api"
             }/payments/portal?returnUrl=true`,
-            headers: {
-              Cookie: `heslo.token=${token}`,
-            },
           }}
           style={{ backgroundColor: theme.colors.floral.DEFAULT }}
           startInLoadingState

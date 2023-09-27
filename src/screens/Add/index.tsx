@@ -86,6 +86,7 @@ const Add = ({
 
           return {
             ...rawData,
+            title: aes256.encrypt(password, rawData.title),
             content: aes256.encrypt(password, content),
           };
         },

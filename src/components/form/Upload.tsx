@@ -1,9 +1,9 @@
+import { useField } from "@unform/core";
+import * as DocumentPicker from "expo-document-picker";
+import { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { DocumentPlusIcon } from "react-native-heroicons/solid";
 import theme from "src/theme";
-import * as DocumentPicker from "expo-document-picker";
-import { useEffect, useRef, useState } from "react";
-import { useField } from "@unform/core";
 
 export interface FileType {
   name: string;
@@ -38,11 +38,15 @@ const Upload = ({ name, isInlined }: UploadProps) => {
 
   const handleSelectFile = async () => {
     clearError();
-    const result = await DocumentPicker.getDocumentAsync({
+    const { assets, canceled } = await DocumentPicker.getDocumentAsync({
       copyToCacheDirectory: true,
     });
 
-    if (result.type === "cancel" || !result.mimeType) return;
+    if (canceled || !assets) return;
+
+    const result = assets[0];
+
+    if (!result || !result.mimeType) return;
 
     const file: FileType = {
       name: result.name,

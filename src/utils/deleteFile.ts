@@ -7,7 +7,7 @@ const deleteFile = async (content: string, password: string) => {
 
     await api.delete(
       `/upload/${encodeURIComponent(
-        url.replace(process.env.FILES_CDN_URL, "")
+        url.replace(process.env.FILES_CDN_URL as string, "")
       )}`
     );
   } catch (err) {

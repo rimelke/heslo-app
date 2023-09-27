@@ -1,7 +1,6 @@
 import Loading from "@components/Loading";
 import ScreenContainer from "@components/ScreenContainer";
 import ErrorScreen from "@components/screens/ErrorScreen";
-import { useAuth } from "@contexts/AuthContext";
 import useRequest from "@hooks/useRequest";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect } from "react";
@@ -11,7 +10,6 @@ const Activate = ({
   route,
   navigation,
 }: NativeStackScreenProps<AuthStackList, "Activate">) => {
-  const { setToken } = useAuth();
   const { error, sendRequest } = useRequest("/users/activate", "patch", {
     stopLoadingOnSuccess: false,
     defaultIsLoading: true,
@@ -26,8 +24,6 @@ const Activate = ({
       const result = await sendRequest({ token });
 
       if (!result) return;
-
-      setToken(result.token);
 
       navigation.replace("Plan");
     };
