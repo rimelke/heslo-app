@@ -115,6 +115,10 @@ const FolderWithRef: ForwardRefRenderFunction<
         "entries" in item
           ? {
               ...item,
+              title: aes256.encrypt(
+                newPassword,
+                aes256.decrypt(oldPassword, item.title)
+              ),
               entries: item.entries.map(getUpdatedEntry),
             }
           : getUpdatedEntry(item)

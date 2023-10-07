@@ -37,7 +37,7 @@ const ChangePassword = ({
   onChangePassword,
 }: ChangePasswordProps) => {
   const formRef = useRef<FormHandles>(null);
-  const { folders } = useFolders();
+  const { folders, setFolders } = useFolders();
   const { isLoading, adapt, error, setError } = useAsync();
   const { setPassword } = useAuth();
 
@@ -50,23 +50,25 @@ const ChangePassword = ({
         usedFolders = newFolders;
       }
 
-      const entries = (
-        await Promise.all(
-          usedFolders.map(async (folder) => {
-            const { data } = await api.get<(IEntry | IGroup)[]>(
-              `/folders/${folder.id}/entries`
-            );
+      const entries: IEntry[] = [];
+      const groups: IGroup[] = [];
 
-            return data.reduce<IEntry[]>(
-              (acc, item) => [
-                ...acc,
-                ...("entries" in item ? item.entries : [item]),
-              ],
-              []
-            );
-          })
-        )
-      ).flat();
+      await Promise.all(
+        usedFolders.map(async (folder) => {
+          const { data } = await api.get<(IEntry | IGroup)[]>(
+            `/folders/${folder.id}/entries`
+          );
+
+          data.forEach((item) => {
+            if ("entries" in item) {
+              groups.push(item);
+              entries.push(...item.entries);
+            } else {
+              entries.push(item);
+            }
+          });
+        })
+      );
 
       const { clientLoginState, startLoginRequest: loginRequest } =
         opaque.client.startLogin({ password: oldPassword });
@@ -124,9 +126,32 @@ const ChangePassword = ({
               )
             : null,
         })),
+        groups: groups.map((group) => ({
+          id: group.id,
+          title: aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, group.title)
+          ),
+        })),
+        folders: usedFolders.map((folder) => ({
+          id: folder.id,
+          title: aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, folder.title)
+          ),
+        })),
       });
 
       setPassword(newPassword);
+      setFolders((oldFolders) =>
+        oldFolders?.map((folder) => ({
+          ...folder,
+          title: aes256.encrypt(
+            newPassword,
+            aes256.decrypt(oldPassword, folder.title)
+          ),
+        }))
+      );
       onChangePassword(oldPassword, newPassword);
       navigation.navigate("Profile");
     }

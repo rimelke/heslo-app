@@ -1,5 +1,11 @@
 import useGet from "@hooks/useGet";
-import { createContext, PropsWithChildren, useContext } from "react";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+} from "react";
 
 export interface IFolder {
   id: string;
@@ -20,6 +26,7 @@ interface IFoldersContextData {
     data: Partial<IFolder> | ((folder: IFolder) => Partial<IFolder>)
   ) => void;
   removeFolder: (folderId: string) => void;
+  setFolders: Dispatch<SetStateAction<IFolder[] | undefined>>;
 }
 
 export const FoldersContext = createContext({} as IFoldersContextData);
@@ -70,6 +77,7 @@ export const FoldersProvider = ({ children }: PropsWithChildren<{}>) => {
         updateFolder,
         removeFolder,
         totalEntries,
+        setFolders,
       }}
     >
       {children}

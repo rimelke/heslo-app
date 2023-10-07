@@ -9,6 +9,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import api from "@services/api";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
+import aes256 from "@utils/aes256";
 import getFormHandler from "@utils/getFormHandler";
 import { useRef } from "react";
 import { Text, View } from "react-native";
@@ -49,7 +50,11 @@ const Signup = ({
       registrationResponse,
     });
 
-    await api.post("/auth/register/record", { nonce, registrationRecord });
+    await api.post("/auth/register/record", {
+      nonce,
+      registrationRecord,
+      defaultFolderTitle: aes256.encrypt(password, "Default"),
+    });
 
     setDefaultEmail(email);
     navigation.navigate("Success");
