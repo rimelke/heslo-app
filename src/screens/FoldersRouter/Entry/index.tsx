@@ -107,7 +107,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
               fontWeight: "bold",
             }}
           >
-            {folder?.title}
+            {folder && aes256.decrypt(password, folder.title)}
           </Text>
         </View>
         <ChevronRightIcon
@@ -130,7 +130,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
                   fontWeight: "bold",
                 }}
               >
-                {group.title}
+                {aes256.decrypt(password, group.title)}
               </Text>
             </View>
             <ChevronRightIcon
@@ -154,7 +154,7 @@ const Entry = ({ route, updateEntry, deleteEntry, navigation }: Props) => {
               fontWeight: "bold",
             }}
           >
-            {entry.title}
+            {initialData.title}
           </Text>
         </View>
       </View>

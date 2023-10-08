@@ -53,7 +53,7 @@ const Add = ({
     [selectedFolderId]
   );
 
-  const { password, user } = useAuth();
+  const { password = "", user } = useAuth();
   const { error, isLoading, sendRequest } = useRequest("/entries");
 
   useEffect(() => {
@@ -192,7 +192,7 @@ const Add = ({
               style={{ marginBottom: 16 }}
               onValueChange={(value) => setSelectedFolderId(value)}
               options={folders.map((folder) => ({
-                label: folder.title,
+                label: aes256.decrypt(password, folder.title),
                 value: folder.id,
               }))}
             />
@@ -205,7 +205,7 @@ const Add = ({
                   placeholder="Select a group"
                   style={{ marginBottom: 16 }}
                   options={groups.map((group) => ({
-                    label: group.title,
+                    label: aes256.decrypt(password, group.title),
                     value: group.id,
                   }))}
                 />

@@ -1,10 +1,12 @@
 import Button from "@components/Button";
 import Input from "@components/form/Input";
 import Select from "@components/form/Select";
+import { useAuth } from "@contexts/AuthContext";
 import { useFolders } from "@contexts/FoldersContext";
 import useRequest from "@hooks/useRequest";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
+import aes256 from "@utils/aes256";
 import getFormHandler from "@utils/getFormHandler";
 import { useRef } from "react";
 import { Text } from "react-native";
@@ -26,6 +28,7 @@ const AddGroup = ({ goToFolder, addGroup }: AddGroupProps) => {
   const formRef = useRef<FormHandles>(null);
   const { error, isLoading, sendRequest } = useRequest("/groups", "post");
   const { folders = [] } = useFolders();
+  const { password = "" } = useAuth();
 
   const handleSubmit = async (data: AddGroupData) => {
     const result = await sendRequest(data);
@@ -52,7 +55,7 @@ const AddGroup = ({ goToFolder, addGroup }: AddGroupProps) => {
         name="folderId"
         label="Folder"
         options={folders.map((folder) => ({
-          label: folder.title,
+          label: aes256.decrypt(password, folder.title),
           value: folder.id,
         }))}
       />

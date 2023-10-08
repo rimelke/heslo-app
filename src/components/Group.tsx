@@ -9,6 +9,8 @@ import IEntry from "src/types/IEntry";
 import IGroup from "src/types/IGroup";
 import Button from "./Button";
 import Entry from "./Entry";
+import { useAuth } from "@contexts/AuthContext";
+import aes256 from "@utils/aes256";
 
 interface GroupProps {
   group: IGroup;
@@ -21,6 +23,7 @@ const Group = ({ group, openEntry }: GroupProps) => {
       NativeStackNavigationProp<FoldersStackList, "Folder", "tabs">
     >();
   const [isOpen, setIsOpen] = useState(false);
+  const { password = "" } = useAuth();
 
   return (
     <TouchableOpacity
@@ -46,7 +49,7 @@ const Group = ({ group, openEntry }: GroupProps) => {
             fontSize: 16,
           }}
         >
-          {group.title}
+          {aes256.decrypt(password, group.title)}
         </Text>
       </View>
       <View

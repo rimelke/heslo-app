@@ -14,6 +14,8 @@ import { Text, View } from "react-native";
 import theme from "src/theme";
 import { z } from "zod";
 import { FoldersStackList } from ".";
+import { useAuth } from "@contexts/AuthContext";
+import aes256 from "@utils/aes256";
 
 interface EditFolderData {
   title: string;
@@ -31,13 +33,17 @@ const EditFolder = ({
     `/folders/${folderId}`,
     "patch"
   );
+  const { password = "" } = useAuth();
 
   const folder = folders.find((folder) => folder.id === folderId);
 
   if (!folder) return null;
 
   const handleSubmit = async (data: EditFolderData) => {
-    const result = await sendRequest(data);
+    const result = await sendRequest({
+      ...data,
+      title: aes256.encrypt(password, data.title),
+    });
 
     if (!result) return;
 
@@ -56,16 +62,21 @@ const EditFolder = ({
     handleSubmit
   );
 
+  const folderTitle = aes256.decrypt(password, folder.title);
+
   return (
     <ScreenContainer withScroll>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <BackArrow onPress={() => navigation.replace("Folder", { folderId })} />
 
-        <Title>Edit folder - {folder.title}</Title>
+        <Title>Edit folder - {folderTitle}</Title>
       </View>
 
       <Form
-        initialData={folder}
+        initialData={{
+          ...folder,
+          title: folderTitle,
+        }}
         style={{ marginTop: 24 }}
         ref={formRef}
         onSubmit={formHandler}

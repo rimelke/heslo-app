@@ -40,7 +40,7 @@ const FolderWithRef: ForwardRefRenderFunction<
 > = ({ route, navigation }, ref) => {
   const { folderId } = route.params;
 
-  const { user } = useAuth();
+  const { user, password = "" } = useAuth();
   const { folders } = useFolders();
   const {
     data = [],
@@ -153,7 +153,7 @@ const FolderWithRef: ForwardRefRenderFunction<
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <BackArrow onPress={() => navigation.replace("Folders")} />
 
-        <Title>{folder?.title}</Title>
+        <Title>{folder && aes256.decrypt(password, folder.title)}</Title>
 
         {user?.plan === "premium" && (
           <View
